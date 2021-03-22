@@ -12,14 +12,25 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
 
+  const points = Array.apply(null, new Array(anecdotes.length)).map(
+    Number.prototype.valueOf,
+    0
+  );
+
   const showRandom = () => {
     return setSelected(Math.floor(Math.random() * anecdotes.length));
+  };
+
+  const vote = () => {
+    const index = selected;
+    console.log(index);
   };
 
   return (
     <div>
       {anecdotes[selected]}
       <br />
+      <button onClick={vote}>vote</button>
       <button onClick={showRandom}>random</button>
     </div>
   );
