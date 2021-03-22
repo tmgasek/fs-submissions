@@ -11,27 +11,40 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
-
-  const points = Array.apply(null, new Array(anecdotes.length)).map(
-    Number.prototype.valueOf,
-    0
+  const [points, setPoints] = useState(
+    Array.apply(null, new Array(anecdotes.length)).map(
+      Number.prototype.valueOf,
+      0
+    )
   );
 
   const showRandom = () => {
-    return setSelected(Math.floor(Math.random() * anecdotes.length));
+    const randomIndex = Math.floor(Math.random() * anecdotes.length);
+    setSelected(randomIndex);
   };
 
   const vote = () => {
     const index = selected;
-    console.log(index);
+    const copy = [...points];
+    copy[index]++;
+    setPoints(copy);
+  };
+
+  const showTopAnecdote = () => {
+    const topNum = Math.max(...points);
+    return points.indexOf(topNum);
   };
 
   return (
     <div>
       {anecdotes[selected]}
       <br />
+      has {points[selected]} points
+      <br />
       <button onClick={vote}>vote</button>
       <button onClick={showRandom}>random</button>
+      <h1>Top anecdote</h1>
+      {anecdotes[showTopAnecdote()]}
     </div>
   );
 };
