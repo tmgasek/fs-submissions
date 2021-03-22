@@ -26,23 +26,33 @@ const Statistics = (props) => {
 
   const calculatePositive = () => (good / calculateAll()) * 100;
 
+  if (allClicks.length === 0) {
+    return (
+      <div>
+        <h1>Statistics</h1>
+        <p>No feedback given</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h1>Statistics</h1>
-      <p>
-        good {good}
-        <br />
-        neutral {neutral}
-        <br />
-        bad {bad}
-        <br />
-        all {calculateAll()}
-        <br />
-        average {average()}
-        <br />
-        positive {calculatePositive()}%
-      </p>
+      <Statistic text="good" value={good} />
+      <Statistic text="neutral" value={neutral} />
+      <Statistic text="bad" value={bad} />
+      <Statistic text="all" value={calculateAll()} />
+      <Statistic text="average" value={average()} />
+      <Statistic text="positive" value={calculatePositive() + '%'} />
     </div>
+  );
+};
+
+const Statistic = ({ text, value }) => {
+  return (
+    <p>
+      {text} {value}
+    </p>
   );
 };
 
@@ -70,6 +80,7 @@ const App = () => {
 
   return (
     <div>
+      <h1>Give Feedback</h1>
       <Button handleClick={handleGoodClick} text="good" />
       <Button handleClick={handleNeutralClick} text="neutral" />
       <Button handleClick={handleBadClick} text="bad" />
