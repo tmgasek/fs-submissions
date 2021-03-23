@@ -18,19 +18,24 @@ const App = () => {
     )
   );
 
-  const showRandom = () => {
-    const randomIndex = Math.floor(Math.random() * anecdotes.length);
-    setSelected(randomIndex);
+  const getRandomNumber = () => {
+    while (true) {
+      let rand = Math.floor(Math.random() * anecdotes.length);
+      if (rand !== selected) return rand;
+    }
+  };
+
+  const handleRandomClick = () => {
+    setSelected(getRandomNumber());
   };
 
   const vote = () => {
-    const index = selected;
     const copy = [...points];
-    copy[index]++;
+    copy[selected]++;
     setPoints(copy);
   };
 
-  const showTopAnecdote = () => {
+  const getTopAnecdote = () => {
     const topNum = Math.max(...points);
     return points.indexOf(topNum);
   };
@@ -42,9 +47,9 @@ const App = () => {
       has {points[selected]} points
       <br />
       <button onClick={vote}>vote</button>
-      <button onClick={showRandom}>random</button>
+      <button onClick={handleRandomClick}>random</button>
       <h1>Top anecdote</h1>
-      {anecdotes[showTopAnecdote()]}
+      {anecdotes[getTopAnecdote()]}
     </div>
   );
 };
