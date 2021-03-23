@@ -20,21 +20,12 @@ const App = () => {
 
   const getRandomNumber = () => {
     while (true) {
-<<<<<<< HEAD
-      let randomNum = Math.floor(Math.random() * anecdotes.length);
-      if (selected !== randomNum) return randomNum;
-    }
-  };
-
-  const handleClickNext = () => {
-=======
       let rand = Math.floor(Math.random() * anecdotes.length);
       if (rand !== selected) return rand;
     }
   };
 
   const handleRandomClick = () => {
->>>>>>> 62aea5a06fed6e5048ba0cc754d64eb89b0a3a91
     setSelected(getRandomNumber());
   };
 
@@ -56,11 +47,7 @@ const App = () => {
       has {points[selected]} points
       <br />
       <button onClick={vote}>vote</button>
-<<<<<<< HEAD
-      <button onClick={handleClickNext}>next</button>
-=======
       <button onClick={handleRandomClick}>random</button>
->>>>>>> 62aea5a06fed6e5048ba0cc754d64eb89b0a3a91
       <h1>Top anecdote</h1>
       {anecdotes[getTopAnecdote()]}
     </div>
