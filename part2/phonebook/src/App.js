@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 
-const App = () => {
-  const [persons, setPersons] = useState([{ name: 'Arto Hellas' }]);
-  const [newName, setNewName] = useState('');
 const Person = (props) => {
   return (
     <p>
@@ -72,9 +69,6 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          name: <input />
       <div>
         filter shown with{' '}
         <input value={filterValue} onChange={handleFilterChange} />
@@ -92,7 +86,6 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      ...
       {filterName().map((p) => {
         return <Person key={p.name} name={p.name} number={p.number} />;
       })}
