@@ -1,18 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+const api_key = process.env.REACT_APP_API_KEY;
 
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [newFilter, setFilter] = useState('');
+  const [weather, setWeather] = useState('');
 
   useEffect(() => {
-    axios.get('https://restcountries.eu/rest/v2/all').then((response) => {
-      setCountries(response.data);
-    });
+    axios
+      .get('https://restcountries.eu/rest/v2/all')
+      .then((response) => setCountries(response.data));
   }, []);
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://api.weatherstack.com/current?access_key=${api_key}&query=New York`
+      )
+      .then((response) => setWeather(response.data));
+  }, []);
+  console.log(weather);
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
+  };
+
+  const handleSelectClick = (e) => {
+    setFilter(e.target.previousSibling.textContent.toLowerCase());
   };
 
   const showCountries = () => {
@@ -23,10 +38,8 @@ const App = () => {
     if (filtered.length > 10) {
       return <div> too many </div>;
     }
-
     if (filtered.length === 1) {
       const c = filtered[0];
-      console.log(c);
       return (
         <div>
           <h1>{c.name}</h1>
@@ -41,9 +54,13 @@ const App = () => {
         </div>
       );
     }
-
     return filtered.map((c) => {
-      return <div key={c.alpha3Code}>{c.name}</div>;
+      return (
+        <div key={c.alpha3Code}>
+          {c.name}
+          <button onClick={handleSelectClick}>Select</button>
+        </div>
+      );
     });
   };
 
