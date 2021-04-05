@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import personService from './services/persons';
 
 const Filter = (props) => {
   return (
@@ -27,18 +27,12 @@ const PersonForm = (props) => {
   );
 };
 
-const Persons = (props) => {
+const Person = ({ person, deletePerson }) => {
   return (
-    <div>
-      <h2>Numbers</h2>
-      {props.filter().map((p) => {
-        return (
-          <p key={p.name}>
-            {p.name} {p.number}
-          </p>
-        );
-      })}
-    </div>
+    <li>
+      {person.name} {person.number}
+      <button onClick={deletePerson}>delete</button>
+    </li>
   );
 };
 
@@ -49,8 +43,8 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
-      setPersons(response.data);
+    personService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
@@ -61,13 +55,32 @@ const App = () => {
       number: newNumber,
     };
     if (checkDuplicates()) {
-      showAlert(`${newName} already exists in phonebook.`);
-      setNewName('');
-      return;
+      if (
+        window.confirm(
+          `${newPerson.name} already exists in phonebook. do you want to update ${newPerson.name}'s number?`
+        )
+      ) {
+        const id = checkDuplicates().id;
+        const changedPerson = { ...newPerson, number: newNumber };
+        personService.update(id, changedPerson).then((changedPerson) => {
+          setPersons(
+            persons.map((person) => (person.id !== id ? person : changedPerson))
+          );
+        });
+
+        emptyInputs();
+        return;
+      } else {
+        showAlert(`${newName} already exists in phonebook.`);
+        emptyInputs();
+        return;
+      }
     }
-    setPersons(persons.concat(newPerson));
-    setNewName('');
-    setNewNumber('');
+
+    personService.create(newPerson).then((newPerson) => {
+      setPersons(persons.concat(newPerson));
+      emptyInputs();
+    });
   };
 
   const handleNameChange = (e) => {
@@ -82,12 +95,22 @@ const App = () => {
     setNewFilter(e.target.value);
   };
 
+  const emptyInputs = () => {
+    setNewName('');
+    setNewNumber('');
+  };
+
   const checkDuplicates = () => {
     return persons.find((p) => p.name === newName);
   };
 
   const showAlert = (message) => {
     return window.alert(message);
+  };
+
+  const deletePerson = (id) => {
+    personService.remove(id);
+    setPersons(persons.filter((p) => p.id !== id));
   };
 
   const filter = () => {
@@ -109,7 +132,15 @@ const App = () => {
         newNumber={newNumber}
         handleNumberChange={handleNumberChange}
       />
-      <Persons filter={filter} />
+      {filter().map((person, i) => {
+        return (
+          <Person
+            key={i}
+            person={person}
+            deletePerson={() => deletePerson(person.id)}
+          />
+        );
+      })}
     </div>
   );
 };
