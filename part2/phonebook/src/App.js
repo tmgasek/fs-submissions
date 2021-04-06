@@ -1,46 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import personService from './services/persons';
-
-const Filter = (props) => {
-  return (
-    <div>
-      search names:{' '}
-      <input value={props.newFilter} onChange={props.handleFilterChange} />
-    </div>
-  );
-};
-
-const PersonForm = (props) => {
-  return (
-    <form onSubmit={props.addPerson}>
-      <div>
-        name: <input value={props.newName} onChange={props.handleNameChange} />
-      </div>
-      <div>
-        number:{' '}
-        <input value={props.newNumber} onChange={props.handleNumberChange} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  );
-};
-
-const Person = ({ person, deletePerson }) => {
-  return (
-    <li>
-      {person.name} {person.number}
-      <button onClick={deletePerson}>delete</button>
-    </li>
-  );
-};
+import { Notification } from './components/Notification';
+import { Filter } from './components/Filter';
+import { PersonForm } from './components/PersonForm';
+import { Person } from './components/Person';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [newFilter, setNewFilter] = useState('');
+  const [message, setMessage] = useState(null);
+  const [className, setClassName] = useState('');
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -62,11 +33,23 @@ const App = () => {
       ) {
         const id = checkDuplicates().id;
         const changedPerson = { ...newPerson, number: newNumber };
-        personService.update(id, changedPerson).then((changedPerson) => {
-          setPersons(
-            persons.map((person) => (person.id !== id ? person : changedPerson))
-          );
-        });
+        personService
+          .update(id, changedPerson)
+          .then((changedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== id ? person : changedPerson
+              )
+            );
+          })
+          .catch((error) => {
+            setMessage(
+              `${changedPerson.name} was already removed from the server`
+            );
+            setClassName('error');
+            timeOutMessage(3000);
+            setPersons(persons.filter((p) => p.id !== id));
+          });
 
         emptyInputs();
         return;
@@ -80,7 +63,16 @@ const App = () => {
     personService.create(newPerson).then((newPerson) => {
       setPersons(persons.concat(newPerson));
       emptyInputs();
+      setMessage(`${newPerson.name} has been added.`);
+      setClassName('success');
+      timeOutMessage(3000);
     });
+  };
+
+  const timeOutMessage = (length) => {
+    setTimeout(() => {
+      setMessage(null);
+    }, length);
   };
 
   const handleNameChange = (e) => {
@@ -111,6 +103,8 @@ const App = () => {
   const deletePerson = (id) => {
     personService.remove(id);
     setPersons(persons.filter((p) => p.id !== id));
+    setMessage('entry removed');
+    setClassName('success');
   };
 
   const filter = () => {
@@ -121,10 +115,12 @@ const App = () => {
     }
     return persons;
   };
+
   return (
     <div>
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h2>Phonebook</h2>
+      <Notification message={message} className={className} />
       <PersonForm
         addPerson={addPerson}
         newName={newName}
@@ -132,6 +128,7 @@ const App = () => {
         newNumber={newNumber}
         handleNumberChange={handleNumberChange}
       />
+      <br />
       {filter().map((person, i) => {
         return (
           <Person
