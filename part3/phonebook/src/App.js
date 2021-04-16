@@ -60,13 +60,18 @@ const App = () => {
       }
     }
 
-    personService.create(newPerson).then((newPerson) => {
-      setPersons(persons.concat(newPerson));
-      emptyInputs();
-      setMessage(`${newPerson.name} has been added.`);
-      setClassName('success');
-      timeOutMessage(3000);
-    });
+    personService
+      .create(newPerson)
+      .then((newPerson) => {
+        setPersons(persons.concat(newPerson));
+        emptyInputs();
+        setMessage(`${newPerson.name} has been added.`);
+        setClassName('success');
+        timeOutMessage(3000);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
   };
 
   const timeOutMessage = (length) => {
