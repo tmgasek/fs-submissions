@@ -43,15 +43,23 @@ const App = () => {
             );
           })
           .catch((error) => {
-            setMessage(
-              `${changedPerson.name} was already removed from the server`
-            );
-            setClassName('error');
-            timeOutMessage(3000);
-            setPersons(persons.filter((p) => p.id !== id));
+            if (error.response.status === 400) {
+              setMessage(`${error.response.data}`);
+              setClassName('error');
+              timeOutMessage(3000);
+              emptyInputs();
+            } else {
+              console.log(error.response);
+              setMessage(
+                `${changedPerson.name} was already removed from the server`
+              );
+              setClassName('error');
+              timeOutMessage(3000);
+              setPersons(persons.filter((p) => p.id !== id));
+              emptyInputs();
+            }
           });
 
-        emptyInputs();
         return;
       } else {
         showAlert(`${newName} already exists in phonebook.`);
@@ -69,8 +77,10 @@ const App = () => {
         setClassName('success');
         timeOutMessage(3000);
       })
-      .catch((err) => {
-        console.log(err.response.data);
+      .catch((error) => {
+        setMessage(`${error.response.data}`);
+        setClassName('error');
+        timeOutMessage(3000);
       });
   };
 
