@@ -86,9 +86,7 @@ const mostBlogs = (blogs) => {
   const authors = blogs.map((blog) => blog.author);
 
   const authorCount = authors.reduce((author, count) => {
-    if (!author[count]) {
-      author[count] = 0;
-    }
+    author[count] = author[count] || 0;
     author[count]++;
     return author;
   }, {});
