@@ -15,7 +15,7 @@ const initialNotes = [
 
 //  used for creating a db object id that does not belong to any note object in db.
 const nonExistingId = async () => {
-  const note = new Note({ content: 'willremovethissoon', date: new Date() });
+  const note = new Note({ content: 'willremovethissoonISH', date: new Date() });
   await note.save();
   await note.remove();
 
