@@ -1,13 +1,13 @@
 GET http://localhost:3001/api/notes/
 
 ###
-DELETE  http://localhost:3001/api/notes/60788ad2ca578610f1a318e1
+DELETE  http://localhost:3001/api/notes/607c77a057692a2df3bc7b7e
 
 ###
-PUT  http://localhost:3001/api/notes/6075c897c7f7d31f6f58131c
+PUT  http://localhost:3001/api/notes/608964cd33cbf800158873fe
 Content-Type: application/json
 
 {
-  "content": "hello",
+  "content": "hello this has been updated!!",
   "important": false
 }
