@@ -8,6 +8,6 @@ PUT  http://localhost:3001/api/notes/608964cd33cbf800158873fe
 Content-Type: application/json
 
 {
-  "content": "hello this has been updated!!",
+  "content": "hello this has been updated2!!",
   "important": false
 }
