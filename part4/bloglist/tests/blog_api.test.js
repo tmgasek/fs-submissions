@@ -26,6 +26,12 @@ test('all notes are returned', async () => {
   expect(response.body).toHaveLength(helper.initialBlogs.length);
 });
 
+test('all blogs have a unique identifier property named "id" ', async () => {
+  const response = await api.get('/api/blogs');
+  const ids = response.body.map((blog) => blog.id);
+  expect(ids).toHaveLength(helper.initialBlogs.length);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
