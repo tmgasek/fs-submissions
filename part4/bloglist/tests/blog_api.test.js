@@ -63,7 +63,46 @@ test('likes property defaults to 0 if missing', async () => {
   await api.post('/api/blogs').send(newBlog).expect(200);
 
   const blogsAtEnd = await helper.blogsInDb();
-  expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0);
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+  expect(blogsAtEnd[helper.initialBlogs.length].likes).toBe(0);
+});
+
+test('if title and url properties are missing from req data, responds with 400', async () => {
+  const newBlog = {
+    author: 'valid author',
+    likes: 4,
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(400);
+});
+
+test('deletes a blog with correct id', async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToDelete = blogsAtStart[0];
+
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+
+  const urls = blogsAtEnd.map((blog) => blog.url);
+  expect(urls).not.toContain(blogToDelete.url);
+});
+
+test('updates blog`s likes correctly', async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToUpdate = blogsAtStart[0];
+
+  const newBlog = {
+    ...blogToUpdate,
+    likes: 20,
+  };
+
+  await api.put(`/api/blogs/${blogToUpdate.id}`).send(newBlog).expect(200);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  console.log(blogsAtEnd[0]);
+  expect(blogsAtEnd[0].likes).toEqual(20);
 });
 
 afterAll(() => {
