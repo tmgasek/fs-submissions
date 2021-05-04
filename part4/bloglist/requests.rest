@@ -2,7 +2,7 @@ POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
-  "title": "test title",
+  "title": "test title5",
   "author": "test author",
   "url": "test url",
   "likes": 2,
@@ -34,4 +34,26 @@ Content-Type: application/json
   "username": "test username 2",
   "name": "tester 2",
   "password": "pass2"
+}
+
+### 
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "test username 2",
+  "password": "pass2"
+}
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QgdXNlcm5hbWUgMiIsImlkIjoiNjA5MTEyMTgwNGE3Zjk2MWI2NGViY2Q5IiwiaWF0IjoxNjIwMTMzODI0fQ.HRcrnw5O5Staz-KiMNu-EKJDPCGEcC_0QtAD9rXmsbQ
+
+{
+    "title": "token working middleware",
+    "author": "author",
+    "url": "url",
+    "likes": 5,
+    "userId": "6091121804a7f961b64ebcd9"
 }
