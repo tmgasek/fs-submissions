@@ -116,6 +116,11 @@ describe('when there is initially one user in db', () => {
     await user.save();
   });
 
+  test('console log', async () => {
+    const users = await User.find({});
+    console.log(users);
+  });
+
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb();
 
