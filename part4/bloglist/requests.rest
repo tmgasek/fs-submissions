@@ -23,3 +23,12 @@ Content-Type: application/json
     "url": "body.url",
     "likes": "522"
 }
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "test username 2",
+  "name": "tester"
+}
