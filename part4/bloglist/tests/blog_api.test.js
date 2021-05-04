@@ -63,7 +63,7 @@ test('likes property defaults to 0 if missing', async () => {
   await api.post('/api/blogs').send(newBlog).expect(200);
 
   const blogsAtEnd = await helper.blogsInDb();
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0);
 });
 
 afterAll(() => {
