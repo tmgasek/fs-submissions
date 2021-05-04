@@ -2,9 +2,11 @@ POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
+  "title": "test title",
   "author": "test author",
   "url": "test url",
-  "likes": 20
+  "likes": 2,
+  "userId": "6091121804a7f961b64ebcd9"
 }
 
 ###
