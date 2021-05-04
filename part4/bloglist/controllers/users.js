@@ -11,8 +11,12 @@ usersRouter.post('/', async (request, response) => {
   const body = request.body;
 
   if (!body.password) {
-    response.status(401).json({
-      error: 'wrong username/pass',
+    response.status(400).json({
+      error: 'no password entered',
+    });
+  } else if (body.password.length < 4) {
+    response.status(400).json({
+      error: 'password too short',
     });
   }
 
