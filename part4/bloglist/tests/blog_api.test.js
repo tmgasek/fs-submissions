@@ -125,7 +125,107 @@ describe('when a blog is posted to api', () => {
       .expect(401)
       .expect('Content-Type', /application\/json/);
   });
+
+  describe('and it is saved to db', () => {
+    let result;
+    beforeEach(async () => {
+      const newBlog = {
+        title: 'test title',
+        author: 'test author',
+        url: 'test url',
+        likes: 5,
+      };
+      result = await api.post('/api/blogs').send(newBlog).set(headers);
+    });
+
+    test('it can be removed', async () => {
+      const aBlog = result.body;
+
+      const blogsAtStart = await helper.blogsInDb();
+      await api.delete(`/api/blogs/${aBlog.id}`).set(headers).expect(204);
+
+      const blogsAtEnd = await helper.blogsInDb();
+      expect(blogsAtEnd.length).toBe(blogsAtStart.length - 1);
+    });
+  });
 });
+
+describe('creation of a user', () => {
+  test('succeeds with a new username', async () => {
+    const usersAtStart = await helper.usersInDb();
+
+    const newUser = {
+      username: 'new user test',
+      name: 'Ketchup',
+      password: 'secret',
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const usersAtEnd = await helper.usersInDb();
+    expect(usersAtEnd.length).toBe(usersAtStart.length + 1);
+
+    const usernames = usersAtEnd.map((user) => user.username);
+    expect(usernames).toContain(newUser.username);
+  });
+
+  test('creation fails with proper statuscode if username taken', async () => {
+    const usersAtStart = await helper.usersInDb();
+
+    const newUser1 = {
+      username: 'user1',
+      name: 'Ketchup',
+      password: 'secret',
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser1)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    const newUser2 = {
+      username: 'user1',
+      name: 'mayo',
+      password: 'secret',
+    };
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser2)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    const usersAtEnd = await helper.usersInDb();
+    expect(usersAtEnd.length).toBe(usersAtStart.length + 1);
+    expect(result.body.error).toContain('expected `username` to be unique');
+  });
+
+  test('fails if password is too short', async () => {
+    const newUser = {
+      username: 'user1',
+      name: 'Ketchup',
+      password: 'sd',
+    };
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(result.body.error).toContain('too short');
+  });
+});
+
+afterAll(() => {
+  mongoose.connection.close();
+});
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,6 +474,6 @@ describe('when a blog is posted to api', () => {
 //   // });
 // });
 
-afterAll(() => {
-  mongoose.connection.close();
-});
+// afterAll(() => {
+//   mongoose.connection.close();
+// });
