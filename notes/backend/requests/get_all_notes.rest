@@ -22,7 +22,7 @@ Content-Type: application/json
 
 {
     "notes": [],
-    "username": "user3",
+    "username": "frontend",
     "name": "tester3",
     "password": "password"
 }
