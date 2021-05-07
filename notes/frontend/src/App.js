@@ -4,6 +4,8 @@ import Notification from './components/Notification';
 import Footer from './components/Footer';
 import noteService from './services/notes';
 import loginService from './services/login';
+import LoginForm from './components/LoginForm';
+import NoteForm from './components/NoteForm';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -77,41 +79,6 @@ const App = () => {
     }
   };
 
-  const loginForm = () => {
-    return (
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    );
-  };
-
-  const noteForm = () => {
-    return (
-      <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChange} />
-        <button type="submit">save</button>
-      </form>
-    );
-  };
-
   const notesToShow = showAll ? notes : notes.filter((note) => note.important);
 
   return (
@@ -120,11 +87,21 @@ const App = () => {
       <Notification message={errorMessage} />
 
       {user === null ? (
-        loginForm()
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+        />
       ) : (
         <div>
           <p>{user.name} logged-in</p>
-          {noteForm()}
+          <NoteForm
+            addNote={addNote}
+            newNote={newNote}
+            handleNoteChange={handleNoteChange}
+          />
         </div>
       )}
 
