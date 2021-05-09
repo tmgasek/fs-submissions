@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Blog from './components/Blog';
+import BlogForm from './components/BlogForm';
+import BlogList from './components/BlogList';
+import LoginForm from './components/LoginForm';
+import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
 const App = () => {
+  const [errorMessage, setErrorMessage] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -40,7 +44,10 @@ const App = () => {
 
       console.log(user);
     } catch (exception) {
-      console.log(exception);
+      setErrorMessage('wrong username and/or password');
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
     }
   };
 
@@ -61,43 +68,6 @@ const App = () => {
     });
   };
 
-  const LoginForm = () => {
-    return (
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            type="text"
-            value={username}
-            name="username"
-            onChange={({ target }) => setUsername(target.value)}
-          ></input>
-        </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            name="password"
-            onChange={({ target }) => setPassword(target.value)}
-          ></input>
-        </div>
-        <button type="submit">login</button>
-      </form>
-    );
-  };
-
-  const BlogList = () => {
-    return (
-      <div>
-        <h2>blogs</h2>
-        {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
-        ))}
-      </div>
-    );
-  };
-
   const logOut = () => {
     window.localStorage.removeItem('loggedInUser');
     setUser(null);
@@ -105,48 +75,32 @@ const App = () => {
     //set message logged out
   };
 
-  const BlogForm = () => {
-    return (
-      <>
-        <h2>new blog</h2>
-        <form onSubmit={addBlog}>
-          <div>
-            title:
-            <input
-              value={newTitle}
-              onChange={({ target }) => setNewTitle(target.value)}
-            />
-          </div>
-          <div>
-            author:
-            <input
-              value={newAuthor}
-              onChange={({ target }) => setNewAuthor(target.value)}
-            />
-          </div>
-          <div>
-            url:
-            <input
-              value={newUrl}
-              onChange={({ target }) => setNewUrl(target.value)}
-            />
-          </div>
-          <button type="submit">save</button>
-        </form>
-      </>
-    );
-  };
-
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <div>
+      <Notification message={errorMessage} />
       {user === null ? (
-        LoginForm()
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+        />
       ) : (
         <div>
           <p>{user.name} logged in</p>
           <button onClick={logOut}>log out</button>
-          {BlogList()}
-          {BlogForm()}
+          <BlogList blogs={blogs} />
+          <BlogForm
+            addBlog={addBlog}
+            newTitle={newTitle}
+            setNewTitle={setNewTitle}
+            newAuthor={newAuthor}
+            setNewAuthor={setNewAuthor}
+            newUrl={newUrl}
+            setNewUrl={setNewUrl}
+          />
         </div>
       )}
     </div>
