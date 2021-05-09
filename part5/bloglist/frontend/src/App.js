@@ -7,7 +7,10 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 
 const App = () => {
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [message, setMessage] = useState({
+    type: '',
+    content: '',
+  });
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -39,19 +42,26 @@ const App = () => {
       });
       setUser(user);
       window.localStorage.setItem('loggedInUser', JSON.stringify(user));
+      setMessage({
+        type: 'success',
+        content: `${user.username} logged in successfully`,
+      });
+      setTimeout(() => {
+        setMessage({});
+      }, 3000);
       setUsername('');
       setPassword('');
 
       console.log(user);
     } catch (exception) {
-      setErrorMessage('wrong username and/or password');
+      setMessage({ type: 'error', content: 'wrong username / password' });
       setTimeout(() => {
-        setErrorMessage(null);
+        setMessage({});
       }, 3000);
     }
   };
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault();
 
     const newBlogObject = {
@@ -60,12 +70,18 @@ const App = () => {
       url: newUrl,
     };
 
-    blogService.create(newBlogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-      setNewAuthor('');
-      setNewTitle('');
-      setNewUrl('');
+    const returnedBlog = await blogService.create(newBlogObject);
+    setBlogs(blogs.concat(returnedBlog));
+    setMessage({
+      type: 'success',
+      content: `${returnedBlog.title} by ${returnedBlog.author} has been added.`,
     });
+    setTimeout(() => {
+      setMessage({});
+    }, 3000);
+    setNewAuthor('');
+    setNewTitle('');
+    setNewUrl('');
   };
 
   const logOut = () => {
@@ -78,7 +94,7 @@ const App = () => {
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <div>
-      <Notification message={errorMessage} />
+      <Notification type={message.type} content={message.content} />
       {user === null ? (
         <LoginForm
           handleLogin={handleLogin}
