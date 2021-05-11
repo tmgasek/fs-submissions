@@ -6,6 +6,7 @@ import noteService from './services/notes';
 import loginService from './services/login';
 import LoginForm from './components/LoginForm';
 import NoteForm from './components/NoteForm';
+import Toggleable from './components/Toggleable';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -100,25 +101,28 @@ const App = () => {
   };
 
   const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' };
-    const showWhenVisible = { display: loginVisible ? '' : 'none' };
-
     return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
+      <Toggleable buttonLabel="log in">
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
+      </Toggleable>
+    );
+  };
+
+  const noteForm = () => {
+    return (
+      <Toggleable buttonLabel="new note">
+        <NoteForm
+          onSubmit={addNote}
+          newNote={newNote}
+          handleNoteChange={handleNoteChange}
+        />
+      </Toggleable>
     );
   };
 
@@ -135,11 +139,7 @@ const App = () => {
         <div>
           <p>{user.name} logged-in</p>
           <button onClick={logOut}>log out</button>
-          <NoteForm
-            addNote={addNote}
-            newNote={newNote}
-            handleNoteChange={handleNoteChange}
-          />
+          {noteForm()}
         </div>
       )}
 
