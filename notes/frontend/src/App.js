@@ -16,7 +16,6 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [loginVisible, setLoginVisible] = useState(false);
 
   useEffect(() => {
     noteService.getAll().then((initialNotes) => {
@@ -34,14 +33,7 @@ const App = () => {
     }
   }, []);
 
-  const addNote = (event) => {
-    event.preventDefault();
-    const noteObject = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() > 0.5,
-    };
-
+  const addNote = (noteObject) => {
     noteService.create(noteObject).then((returnedNote) => {
       setNotes(notes.concat(returnedNote));
       setNewNote('');
@@ -65,11 +57,6 @@ const App = () => {
           setErrorMessage(null);
         }, 5000);
       });
-  };
-
-  const handleNoteChange = (event) => {
-    console.log(event.target.value);
-    setNewNote(event.target.value);
   };
 
   const handleLogin = async (event) => {
@@ -117,11 +104,7 @@ const App = () => {
   const noteForm = () => {
     return (
       <Toggleable buttonLabel="new note">
-        <NoteForm
-          onSubmit={addNote}
-          newNote={newNote}
-          handleNoteChange={handleNoteChange}
-        />
+        <NoteForm createNote={addNote} />
       </Toggleable>
     );
   };
