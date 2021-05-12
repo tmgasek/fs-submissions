@@ -16,9 +16,6 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [newTitle, setNewTitle] = useState('');
-  const [newAuthor, setNewAuthor] = useState('');
-  const [newUrl, setNewUrl] = useState('');
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -62,16 +59,8 @@ const App = () => {
     }
   };
 
-  const addBlog = async (event) => {
-    event.preventDefault();
-
-    const newBlogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-    };
-
-    const returnedBlog = await blogService.create(newBlogObject);
+  const addBlog = async (noteObject) => {
+    const returnedBlog = await blogService.create(noteObject);
     setBlogs(blogs.concat(returnedBlog));
     setMessage({
       type: 'success',
@@ -80,9 +69,6 @@ const App = () => {
     setTimeout(() => {
       setMessage({});
     }, 3000);
-    setNewAuthor('');
-    setNewTitle('');
-    setNewUrl('');
   };
 
   const logOut = () => {
@@ -109,15 +95,7 @@ const App = () => {
   const blogForm = () => {
     return (
       <Toggleable buttonLabel="new blog">
-        <BlogForm
-          addBlog={addBlog}
-          newTitle={newTitle}
-          setNewTitle={setNewTitle}
-          newAuthor={newAuthor}
-          setNewAuthor={setNewAuthor}
-          newUrl={newUrl}
-          setNewUrl={setNewUrl}
-        />
+        <BlogForm createBlog={addBlog} />
       </Toggleable>
     );
   };
