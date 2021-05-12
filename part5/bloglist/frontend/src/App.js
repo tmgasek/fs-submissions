@@ -3,6 +3,7 @@ import BlogForm from './components/BlogForm';
 import BlogList from './components/BlogList';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
+import Toggleable from './components/Toggleable';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -91,32 +92,47 @@ const App = () => {
     //set message logged out
   };
 
+  const loginForm = () => {
+    return (
+      <Toggleable buttonLabel="login">
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          password={password}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+        />
+      </Toggleable>
+    );
+  };
+
+  const blogForm = () => {
+    return (
+      <Toggleable buttonLabel="new blog">
+        <BlogForm
+          addBlog={addBlog}
+          newTitle={newTitle}
+          setNewTitle={setNewTitle}
+          newAuthor={newAuthor}
+          setNewAuthor={setNewAuthor}
+          newUrl={newUrl}
+          setNewUrl={setNewUrl}
+        />
+      </Toggleable>
+    );
+  };
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <div>
       <Notification type={message.type} content={message.content} />
       {user === null ? (
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-        />
+        loginForm()
       ) : (
         <div>
           <p>{user.name} logged in</p>
           <button onClick={logOut}>log out</button>
+          {blogForm()}
           <BlogList blogs={blogs} />
-          <BlogForm
-            addBlog={addBlog}
-            newTitle={newTitle}
-            setNewTitle={setNewTitle}
-            newAuthor={newAuthor}
-            setNewAuthor={setNewAuthor}
-            newUrl={newUrl}
-            setNewUrl={setNewUrl}
-          />
         </div>
       )}
     </div>
