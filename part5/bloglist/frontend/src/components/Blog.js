@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -8,6 +8,16 @@ const Blog = ({ blog }) => {
     marginBottom: 5,
   };
   const [initialView, setInitialView] = useState(true);
+
+  const editBlog = (event) => {
+    event.preventDefault();
+    const id = blog.id;
+
+    updateBlog(id, {
+      ...blog,
+      likes: 2000,
+    });
+  };
 
   const handleClick = () => {
     setInitialView(!initialView);
@@ -18,6 +28,7 @@ const Blog = ({ blog }) => {
       <div style={blogStyle}>
         {blog.title} {blog.author}
         <button onClick={handleClick}>view details</button>
+        <button onClick={editBlog}>like</button>
       </div>
     );
   };
@@ -31,6 +42,7 @@ const Blog = ({ blog }) => {
         {blog.likes} <br />
         {blog.user.username}
         <button onClick={handleClick}>view simple</button>
+        <button onClick={editBlog}>like</button>
       </div>
     );
   };

@@ -60,8 +60,8 @@ const App = () => {
     }
   };
 
-  const addBlog = async (noteObject) => {
-    const returnedBlog = await blogService.create(noteObject);
+  const addBlog = async (blogObject) => {
+    const returnedBlog = await blogService.create(blogObject);
     setBlogs(blogs.concat(returnedBlog));
     blogFormRef.current.toggleVisibility();
     setMessage({
@@ -71,6 +71,12 @@ const App = () => {
     setTimeout(() => {
       setMessage({});
     }, 3000);
+  };
+
+  const updateBlog = async (id, blogObject) => {
+    const returnedBlog = await blogService.update(id, blogObject);
+    console.log('updated?', returnedBlog);
+    setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
   };
 
   const logOut = () => {
@@ -112,7 +118,7 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={logOut}>log out</button>
           {blogForm()}
-          <BlogList blogs={blogs} />
+          <BlogList blogs={blogs} updateBlog={updateBlog} />
         </div>
       )}
     </div>

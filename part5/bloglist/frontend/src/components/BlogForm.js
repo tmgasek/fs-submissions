@@ -17,6 +17,7 @@ const BlogForm = ({ createBlog }) => {
     setNewTitle('');
     setNewUrl('');
   };
+
   return (
     <div>
       <h2>new blog</h2>
