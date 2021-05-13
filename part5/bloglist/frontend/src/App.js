@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import BlogForm from './components/BlogForm';
 import BlogList from './components/BlogList';
 import LoginForm from './components/LoginForm';
@@ -16,6 +16,7 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -62,6 +63,7 @@ const App = () => {
   const addBlog = async (noteObject) => {
     const returnedBlog = await blogService.create(noteObject);
     setBlogs(blogs.concat(returnedBlog));
+    blogFormRef.current.toggleVisibility();
     setMessage({
       type: 'success',
       content: `${returnedBlog.title} by ${returnedBlog.author} has been added.`,
@@ -94,7 +96,7 @@ const App = () => {
 
   const blogForm = () => {
     return (
-      <Toggleable buttonLabel="new blog">
+      <Toggleable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Toggleable>
     );
