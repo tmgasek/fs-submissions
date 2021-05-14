@@ -91,6 +91,12 @@ const App = () => {
     setBlogs(sortBlogs(updatedBlogs));
   };
 
+  const deleteBlog = async (id) => {
+    await blogService.remove(id);
+    const updatedBlogs = blogs.filter((b) => b.id !== id);
+    setBlogs(sortBlogs(updatedBlogs));
+  };
+
   const logOut = () => {
     window.localStorage.removeItem('loggedInUser');
     setUser(null);
@@ -130,7 +136,11 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={logOut}>log out</button>
           {blogForm()}
-          <BlogList blogs={blogs} updateBlog={updateBlog} />
+          <BlogList
+            blogs={blogs}
+            updateBlog={updateBlog}
+            deleteBlog={deleteBlog}
+          />
         </div>
       )}
     </div>

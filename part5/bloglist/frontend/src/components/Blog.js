@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, deleteBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -8,27 +8,33 @@ const Blog = ({ blog, updateBlog }) => {
     marginBottom: 5,
   };
   const [initialView, setInitialView] = useState(true);
+  const [updated, setUpdated] = useState(false);
 
-  const editBlog = (event) => {
-    event.stopPropagation();
+  const handleEditClick = () => {
     const id = blog.id;
 
     updateBlog(id, {
       ...blog,
       likes: blog.likes + 1,
     });
+    setUpdated(!updated);
   };
 
-  const handleClick = () => {
+  const handleDetailClick = () => {
     setInitialView(!initialView);
+  };
+
+  const handleDeleteClick = () => {
+    deleteBlog(blog.id);
   };
 
   const simplerView = () => {
     return (
       <div style={blogStyle}>
-        {blog.title}, by: {blog.author}
-        <button onClick={handleClick}>view details</button>
-        <button onClick={editBlog}>like</button>
+        {blog.title} | by: {blog.author}
+        <button onClick={handleDetailClick}>view details</button>
+        <button onClick={handleEditClick}>like</button>
+        <button onClick={handleDeleteClick}>delete</button>
       </div>
     );
   };
@@ -36,12 +42,13 @@ const Blog = ({ blog, updateBlog }) => {
   const detailedView = () => {
     return (
       <div style={blogStyle}>
-        {blog.title}, by: {blog.author}
+        {blog.title} | by: {blog.author}
         <br /> {blog.url}
-        <br />
-        {blog.likes} <br />
-        <button onClick={handleClick}>view simple</button>
-        <button onClick={editBlog}>like</button>
+        <br /> {blog.likes}
+        <br /> {blog.user.username}
+        <button onClick={handleDetailClick}>view simple</button>
+        <button onClick={handleEditClick}>like</button>
+        <button onClick={handleDeleteClick}>delete</button>
       </div>
     );
   };
