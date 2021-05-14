@@ -10,12 +10,12 @@ const Blog = ({ blog, updateBlog }) => {
   const [initialView, setInitialView] = useState(true);
 
   const editBlog = (event) => {
-    event.preventDefault();
+    event.stopPropagation();
     const id = blog.id;
 
     updateBlog(id, {
       ...blog,
-      likes: 2000,
+      likes: blog.likes + 1,
     });
   };
 
@@ -26,7 +26,7 @@ const Blog = ({ blog, updateBlog }) => {
   const simplerView = () => {
     return (
       <div style={blogStyle}>
-        {blog.title} {blog.author}
+        {blog.title}, by: {blog.author}
         <button onClick={handleClick}>view details</button>
         <button onClick={editBlog}>like</button>
       </div>
@@ -36,11 +36,10 @@ const Blog = ({ blog, updateBlog }) => {
   const detailedView = () => {
     return (
       <div style={blogStyle}>
-        {blog.title} {blog.author}
+        {blog.title}, by: {blog.author}
         <br /> {blog.url}
         <br />
         {blog.likes} <br />
-        {blog.user.username}
         <button onClick={handleClick}>view simple</button>
         <button onClick={editBlog}>like</button>
       </div>
