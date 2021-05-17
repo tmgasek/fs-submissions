@@ -11,8 +11,8 @@ test('renders content', () => {
   };
   const component = render(<Note note={note} />);
   const li = component.container.querySelector('li');
-  // component.debug();
-  // console.log(prettyDOM(li));
+  component.debug();
+  console.log(prettyDOM(li));
   expect(component.container).toHaveTextContent('test content');
 });
 
