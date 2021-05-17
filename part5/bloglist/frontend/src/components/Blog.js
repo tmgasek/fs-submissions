@@ -8,16 +8,25 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     marginBottom: 5,
   };
   const [initialView, setInitialView] = useState(true);
-  const [updated, setUpdated] = useState(false);
+  // const [updated, setUpdated] = useState(false);
 
-  const handleEditClick = () => {
+  // const findUsername = async (blog) => {
+  //   const username = await blog.user.username;
+  //   console.log(username);
+
+  //TODO maybe save the current username to a state variable
+  // and then access it on like update??
+  // };
+
+  const handleLikeClick = () => {
     const id = blog.id;
 
     updateBlog(id, {
       ...blog,
       likes: blog.likes + 1,
     });
-    setUpdated(!updated);
+    // setUpdated(!updated);
+    // findUsername(blog);
   };
 
   const handleDetailClick = () => {
@@ -25,7 +34,11 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
   };
 
   const handleDeleteClick = () => {
-    deleteBlog(blog.id);
+    if (
+      window.confirm(`do you want to delete ${blog.title} by ${blog.author}?`)
+    ) {
+      deleteBlog(blog.id);
+    }
   };
 
   const simplerView = () => {
@@ -33,8 +46,6 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
       <div style={blogStyle}>
         {blog.title} | by: {blog.author}
         <button onClick={handleDetailClick}>view details</button>
-        <button onClick={handleEditClick}>like</button>
-        <button onClick={handleDeleteClick}>delete</button>
       </div>
     );
   };
@@ -42,12 +53,11 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
   const detailedView = () => {
     return (
       <div style={blogStyle}>
-        {blog.title} | by: {blog.author}
-        <br /> {blog.url}
-        <br /> {blog.likes}
-        <br /> {blog.user.username}
+        {blog.title} | by: {blog.author}{' '}
         <button onClick={handleDetailClick}>view simple</button>
-        <button onClick={handleEditClick}>like</button>
+        <br /> {blog.url}
+        <br /> {blog.likes} <button onClick={handleLikeClick}>like</button>
+        {/* <br /> {blog.user.username} */}
         <button onClick={handleDeleteClick}>delete</button>
       </div>
     );
