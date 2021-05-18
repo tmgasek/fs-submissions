@@ -45,7 +45,9 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     return (
       <div style={blogStyle}>
         {blog.title} | by: {blog.author}
-        <button onClick={handleDetailClick}>view details</button>
+        <button className="simpleView" onClick={handleDetailClick}>
+          view details
+        </button>
       </div>
     );
   };
@@ -54,7 +56,9 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     return (
       <div style={blogStyle}>
         {blog.title} | by: {blog.author}{' '}
-        <button onClick={handleDetailClick}>view simple</button>
+        <button className="detailView" onClick={handleDetailClick}>
+          view simple
+        </button>
         <br /> {blog.url}
         <br /> {blog.likes} <button onClick={handleLikeClick}>like</button>
         {/* <br /> {blog.user.username} */}
