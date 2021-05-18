@@ -1,7 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, fireEvent } from '@testing-library/react';
-import { prettyDOM } from '@testing-library/dom';
+// import { prettyDOM } from '@testing-library/dom';
 import Note from './Note';
 
 test('renders content', () => {
@@ -10,9 +10,8 @@ test('renders content', () => {
     important: true,
   };
   const component = render(<Note note={note} />);
-  const li = component.container.querySelector('li');
-  component.debug();
-  console.log(prettyDOM(li));
+  // const li = component.container.querySelector('li');
+  // console.log(prettyDOM(li));
   expect(component.container).toHaveTextContent('test content');
 });
 
