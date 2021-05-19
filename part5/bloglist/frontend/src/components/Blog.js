@@ -45,7 +45,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     return (
       <div style={blogStyle}>
         {blog.title} | by: {blog.author}
-        <button className="simpleView" onClick={handleDetailClick}>
+        <button className="toDetailed" onClick={handleDetailClick}>
           view details
         </button>
       </div>
@@ -56,7 +56,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     return (
       <div style={blogStyle}>
         {blog.title} | by: {blog.author}{' '}
-        <button className="detailView" onClick={handleDetailClick}>
+        <button className="toSimple" onClick={handleDetailClick}>
           view simple
         </button>
         <br /> {blog.url}
