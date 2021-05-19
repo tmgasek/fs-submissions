@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-const Blog = ({ blog, updateBlog, deleteBlog }) => {
+const Blog = ({ blog, updateLikes, deleteBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -21,7 +21,7 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
   const handleLikeClick = () => {
     const id = blog.id;
 
-    updateBlog(id, {
+    updateLikes(id, {
       ...blog,
       likes: blog.likes + 1,
     });

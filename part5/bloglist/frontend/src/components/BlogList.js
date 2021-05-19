@@ -1,6 +1,7 @@
+import React from 'react';
 import Blog from './Blog';
 
-const BlogList = ({ blogs, updateBlog, deleteBlog }) => {
+const BlogList = ({ blogs, updateLikes, deleteBlog }) => {
   return (
     <div>
       <h2>blogs</h2>
@@ -8,7 +9,7 @@ const BlogList = ({ blogs, updateBlog, deleteBlog }) => {
         <Blog
           key={blog.id}
           blog={blog}
-          updateBlog={updateBlog}
+          updateLikes={updateLikes}
           deleteBlog={deleteBlog}
         />
       ))}

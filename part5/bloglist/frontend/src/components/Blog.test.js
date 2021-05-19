@@ -5,6 +5,7 @@ import Blog from './Blog';
 
 describe('singular blog tests', () => {
   let component;
+  let updateLikes;
   beforeEach(() => {
     const blog = {
       title: 'test title',
@@ -13,7 +14,9 @@ describe('singular blog tests', () => {
       likes: 5,
     };
 
-    component = render(<Blog blog={blog} />);
+    updateLikes = jest.fn();
+
+    component = render(<Blog blog={blog} updateLikes={updateLikes} />);
   });
 
   test('renders content', () => {
@@ -27,5 +30,14 @@ describe('singular blog tests', () => {
     fireEvent.click(button);
     expect(component.container).toHaveTextContent('5');
     expect(component.container).toHaveTextContent('test url');
+  });
+
+  test('likes work correctly if clicked twice', () => {
+    const detailBtn = component.getByText('view details');
+    fireEvent.click(detailBtn);
+    const likeBtn = component.getByText('like');
+    fireEvent.click(likeBtn);
+    fireEvent.click(likeBtn);
+    expect(updateLikes.mock.calls).toHaveLength(2);
   });
 });

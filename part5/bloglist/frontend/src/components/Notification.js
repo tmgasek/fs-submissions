@@ -1,3 +1,5 @@
+import React from 'react';
+
 const Notification = ({ type, content }) => {
   if (content === null) {
     return null;

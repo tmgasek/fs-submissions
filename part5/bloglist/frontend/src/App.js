@@ -138,7 +138,7 @@ const App = () => {
           {blogForm()}
           <BlogList
             blogs={blogs}
-            updateBlog={updateBlog}
+            updateLikes={updateBlog}
             deleteBlog={deleteBlog}
           />
         </div>
