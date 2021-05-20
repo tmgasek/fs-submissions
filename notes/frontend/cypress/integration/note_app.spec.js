@@ -1,3 +1,5 @@
+/// <reference types="Cypress" />
+
 describe('Note app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3001/api/testing/reset');
@@ -18,6 +20,20 @@ describe('Note app', function () {
     );
   });
 
+  it('login fails with wrong password', function () {
+    cy.contains('log in').click();
+    cy.get('#username').type('cypress-username');
+    cy.get('#password').type('wrong');
+    cy.get('#login-btn').click();
+
+    cy.get('.error')
+      .should('contain', 'Wrong credentials')
+      .and('have.css', 'color', 'rgb(255, 0, 0)')
+      .and('have.css', 'border-style', 'solid');
+
+    cy.get('html').should('not.contain', 'cypress logged in');
+  });
+
   it('user can login', function () {
     cy.contains('log in').click();
     cy.get('#username').type('cypress-username');
@@ -29,10 +45,7 @@ describe('Note app', function () {
 
   describe('when logged in', function () {
     beforeEach(function () {
-      cy.contains('log in').click();
-      cy.get('#username').type('cypress-username');
-      cy.get('#password').type('password');
-      cy.get('#login-btn').click();
+      cy.login({ username: 'cypress-username', password: 'password' });
     });
 
     it('a new note can be created', function () {
