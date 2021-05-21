@@ -20,6 +20,13 @@ describe('Note app', function () {
     );
   });
 
+  // it('then example', function () {
+  //   cy.get('button').then((buttons) => {
+  //     console.log('number of buttons', buttons.length);
+  //     cy.wrap(buttons[0]).click();
+  //   });
+  // });
+
   it('login fails with wrong password', function () {
     cy.contains('log in').click();
     cy.get('#username').type('cypress-username');
@@ -55,18 +62,17 @@ describe('Note app', function () {
       cy.contains('a note created by cypress');
     });
 
-    describe('and a note exists', function () {
+    describe('and several notes exists', function () {
       beforeEach(function () {
-        cy.contains('new note').click();
-        cy.get('input').type('another note by cypress');
-        cy.contains('save').click();
+        cy.createNote({ content: 'first note', important: false });
+        cy.createNote({ content: 'second note', important: false });
+        cy.createNote({ content: 'third note', important: false });
       });
 
-      it('it can be made important', function () {
-        cy.contains('another note by cypress')
-          .contains('make important')
-          .click();
-        cy.contains('another note by cypress').contains('make not important');
+      it('one can be made important', function () {
+        cy.contains('second note').parent().find('button').as('impBtn');
+        cy.get('@impBtn').click();
+        cy.get('@impBtn').should('contain', 'make not important');
       });
     });
   });
