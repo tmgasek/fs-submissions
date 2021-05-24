@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-const Blog = ({ blog, updateLikes, deleteBlog }) => {
+const Blog = ({ blog, updateLikes, deleteBlog, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -8,12 +8,12 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
     marginBottom: 5,
   };
   const [initialView, setInitialView] = useState(true);
-  // const [updated, setUpdated] = useState(false);
 
-  // const findUsername = async (blog) => {
-  //   const username = await blog.user.username;
-  //   console.log(username);
-
+  const findUsername = async (blog) => {
+    const username = await blog.user.username;
+    console.log(username);
+    console.log(user.username);
+  };
   //TODO maybe save the current username to a state variable
   // and then access it on like update??
   // };
@@ -25,8 +25,7 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
       ...blog,
       likes: blog.likes + 1,
     });
-    // setUpdated(!updated);
-    // findUsername(blog);
+    findUsername(blog);
   };
 
   const handleDetailClick = () => {
@@ -45,7 +44,7 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
     return (
       <div style={blogStyle}>
         {blog.title} | by: {blog.author}
-        <button className="toDetailed" onClick={handleDetailClick}>
+        <button id="toDetailed" onClick={handleDetailClick}>
           view details
         </button>
       </div>
@@ -56,13 +55,19 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
     return (
       <div style={blogStyle}>
         {blog.title} | by: {blog.author}{' '}
-        <button className="toSimple" onClick={handleDetailClick}>
+        <button id="toSimple" onClick={handleDetailClick}>
           view simple
         </button>
         <br /> {blog.url}
-        <br /> {blog.likes} <button onClick={handleLikeClick}>like</button>
-        {/* <br /> {blog.user.username} */}
-        <button onClick={handleDeleteClick}>delete</button>
+        <br /> <span id="likes">{blog.likes}</span>{' '}
+        <button id="likeBtn" onClick={handleLikeClick}>
+          like
+        </button>
+        {user.name === blog.user.name && (
+          <button id="deleteBtn" onClick={handleDeleteClick}>
+            delete
+          </button>
+        )}
       </div>
     );
   };

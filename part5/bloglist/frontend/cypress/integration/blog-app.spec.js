@@ -4,12 +4,19 @@ describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3001/api/testing/reset');
 
-    const user = {
+    const user1 = {
       name: 'cypress',
-      username: 'cypress-username',
+      username: 'cy1',
       password: 'password',
     };
-    cy.request('POST', 'http://localhost:3001/api/users', user);
+
+    const user2 = {
+      name: 'cypress2',
+      username: 'cy2',
+      password: 'password2',
+    };
+    cy.request('POST', 'http://localhost:3001/api/users', user1);
+    cy.request('POST', 'http://localhost:3001/api/users', user2);
 
     cy.visit('http://localhost:3000');
   });
@@ -21,7 +28,7 @@ describe('Blog app', function () {
   describe('login', function () {
     it('succeeds with correct credentials', function () {
       cy.contains('login').click();
-      cy.get('#username').type('cypress-username');
+      cy.get('#username').type('cy1');
       cy.get('#password').type('password');
       cy.get('#submitBtn').click();
       cy.contains('cypress logged in');
@@ -29,7 +36,7 @@ describe('Blog app', function () {
 
     it('fails with the incorrect credentials', function () {
       cy.contains('login').click();
-      cy.get('#username').type('cypress-username');
+      cy.get('#username').type('cy1');
       cy.get('#password').type('wrong');
       cy.get('#submitBtn').click();
 
@@ -40,9 +47,9 @@ describe('Blog app', function () {
     });
   });
 
-  describe('when logged in', function () {
+  describe('when user 1 logged in', function () {
     beforeEach(function () {
-      cy.login({ username: 'cypress-username', password: 'password' });
+      cy.login({ username: 'cy1', password: 'password' });
     });
 
     it('a blog can be created', function () {
@@ -53,6 +60,41 @@ describe('Blog app', function () {
       cy.get('#submitBlogBtn').click();
 
       cy.contains('cypress test title | by: cypress test author');
+    });
+
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        cy.addBlog({
+          title: 'cy title',
+          author: 'cy author',
+          url: 'cy url',
+        });
+      });
+
+      it('a blog can be liked', function () {
+        cy.get('#toDetailed').click();
+        cy.get('#likeBtn').click();
+        cy.get('#likes').contains('1');
+      });
+
+      it('a blog can be deleted by the creator', function () {
+        cy.get('#toDetailed').click();
+        cy.get('#deleteBtn').click();
+
+        cy.get('html').should(
+          'not.contain',
+          'cypress test title | by: cypress test author'
+        );
+      });
+
+      it.only('a blog can`t be deleted by another user', function () {
+        cy.get('#logOutBtn').click();
+        cy.login({ username: 'cy2', password: 'password2' });
+        cy.contains('cypress2 logged in');
+
+        cy.get('#toDetailed').click();
+        cy.get('html').should('not.contain', 'delete');
+      });
     });
   });
 });
