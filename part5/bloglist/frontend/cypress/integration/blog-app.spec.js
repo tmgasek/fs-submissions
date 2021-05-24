@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 
 describe('Blog app', function () {
-  beforeEach(function () {
+  this.beforeEach(function () {
     cy.request('POST', 'http://localhost:3001/api/testing/reset');
 
     const user1 = {
@@ -48,7 +48,7 @@ describe('Blog app', function () {
   });
 
   describe('when user 1 logged in', function () {
-    beforeEach(function () {
+    this.beforeEach(function () {
       cy.login({ username: 'cy1', password: 'password' });
     });
 
@@ -63,7 +63,7 @@ describe('Blog app', function () {
     });
 
     describe('and a blog exists', function () {
-      beforeEach(function () {
+      this.beforeEach(function () {
         cy.addBlog({
           title: 'cy title',
           author: 'cy author',
@@ -85,15 +85,54 @@ describe('Blog app', function () {
           'not.contain',
           'cypress test title | by: cypress test author'
         );
+        cy.visit('http://localhost:3000');
       });
 
-      it.only('a blog can`t be deleted by another user', function () {
+      it('a blog can`t be deleted by another user', function () {
         cy.get('#logOutBtn').click();
         cy.login({ username: 'cy2', password: 'password2' });
         cy.contains('cypress2 logged in');
-
         cy.get('#toDetailed').click();
         cy.get('html').should('not.contain', 'delete');
+      });
+    });
+
+    describe.only('and several blogs exist', function () {
+      this.beforeEach(function () {
+        cy.addBlog({
+          title: 'cy title 1',
+          author: 'cy author 1',
+          url: 'cy url 1',
+        });
+        cy.addBlog({
+          title: 'cy title 2',
+          author: 'cy author 2',
+          url: 'cy url 2',
+        });
+        cy.addBlog({
+          title: 'cy title 3',
+          author: 'cy author 3',
+          url: 'cy url 3',
+          likes: 2,
+        });
+      });
+
+      it('sorts by likes by default', function () {
+        cy.root().find('.blog').first().contains('cy title 3');
+      });
+
+      it('sorts by likes after liking', function () {
+        cy.contains('cy title 2').contains('view details').click();
+        cy.get('#likeBtn')
+          .click()
+          .wait(500)
+          .click()
+          .wait(500)
+          .click()
+          .wait(500);
+
+        cy.root();
+        cy.root().find('.blog').first().contains('cy title 2');
       });
     });
   });

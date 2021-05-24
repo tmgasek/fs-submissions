@@ -9,15 +9,6 @@ const Blog = ({ blog, updateLikes, deleteBlog, user }) => {
   };
   const [initialView, setInitialView] = useState(true);
 
-  const findUsername = async (blog) => {
-    const username = await blog.user.username;
-    console.log(username);
-    console.log(user.username);
-  };
-  //TODO maybe save the current username to a state variable
-  // and then access it on like update??
-  // };
-
   const handleLikeClick = () => {
     const id = blog.id;
 
@@ -25,7 +16,6 @@ const Blog = ({ blog, updateLikes, deleteBlog, user }) => {
       ...blog,
       likes: blog.likes + 1,
     });
-    findUsername(blog);
   };
 
   const handleDetailClick = () => {
@@ -42,7 +32,7 @@ const Blog = ({ blog, updateLikes, deleteBlog, user }) => {
 
   const simplerView = () => {
     return (
-      <div style={blogStyle}>
+      <div className="blog" style={blogStyle}>
         {blog.title} | by: {blog.author}
         <button id="toDetailed" onClick={handleDetailClick}>
           view details
@@ -53,7 +43,7 @@ const Blog = ({ blog, updateLikes, deleteBlog, user }) => {
 
   const detailedView = () => {
     return (
-      <div style={blogStyle}>
+      <div className="blog" style={blogStyle}>
         {blog.title} | by: {blog.author}{' '}
         <button id="toSimple" onClick={handleDetailClick}>
           view simple
