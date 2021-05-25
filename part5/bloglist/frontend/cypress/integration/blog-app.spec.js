@@ -97,7 +97,7 @@ describe('Blog app', function () {
       });
     });
 
-    describe.only('and several blogs exist', function () {
+    describe('and several blogs exist', function () {
       this.beforeEach(function () {
         cy.addBlog({
           title: 'cy title 1',
