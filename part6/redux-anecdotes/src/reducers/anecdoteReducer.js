@@ -25,7 +25,15 @@ const reducer = (state = initialState, action) => {
 
   switch (action.type) {
     case 'VOTE_INCREMENT':
-      return { ...state, votes: state.votes + 1 };
+      const id = action.data.id;
+      const toChange = state.find((a) => a.id === id);
+      const changed = {
+        ...toChange,
+        votes: toChange.votes + 1,
+      };
+      return state.map((a) => (a.id !== id ? a : changed));
+    case 'NEW_ANECDOTE':
+      return state;
     default:
       return state;
   }

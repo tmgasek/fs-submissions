@@ -8,7 +8,7 @@ const App = () => {
   const vote = (id) => {
     dispatch({
       type: 'VOTE_INCREMENT',
-      data: id,
+      data: { id },
     });
     console.log('vote', id);
   };
