@@ -10,8 +10,8 @@ const AnecdoteForm = (props) => {
   const addAnecdote = async (event) => {
     event.preventDefault();
     const content = event.target.anecdote.value;
-    const newAnecdote = await anecdoteService.createNew(content);
-    dispatch(anecdoteCreator(newAnecdote));
+
+    dispatch(anecdoteCreator(content));
 
     dispatch(notify(`note: ${content} added!`));
     setTimeout(() => {
