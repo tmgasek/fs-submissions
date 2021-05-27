@@ -15,10 +15,10 @@ const AnecdoteList = (props) => {
   });
   const dispatch = useDispatch();
 
-  const vote = (id) => {
-    dispatch(voteCreator(id));
+  const handleVote = (anecdote) => {
+    dispatch(voteCreator(anecdote));
 
-    const voted = anecdotes.find((a) => a.id === id);
+    const voted = anecdotes.find((a) => a.id === anecdote.id);
     dispatch(notify(`voted for "${voted.content}"`));
     setTimeout(() => {
       dispatch(notificationClear());
@@ -42,7 +42,7 @@ const AnecdoteList = (props) => {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => handleVote(anecdote)}>vote</button>
           </div>
         </div>
       ))}
