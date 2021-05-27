@@ -5,13 +5,13 @@ import { notificationClear, notify } from '../reducers/notificationReducer';
 
 const AnecdoteList = (props) => {
   const anecdotes = useSelector(({ filter, anecdotes }) => {
-    if (!filter) {
+    if (!anecdotes) {
       return anecdotes;
     }
 
-    return anecdotes.filter((a) => {
-      return a.content.toLowerCase().includes(filter.toLowerCase());
-    });
+    return anecdotes.filter((a) =>
+      a.content.toLowerCase().includes(filter.toLowerCase())
+    );
   });
   const dispatch = useDispatch();
 
