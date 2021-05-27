@@ -32,10 +32,10 @@ export const createNote = (data) => {
   };
 };
 
-export const toggleImportanceOf = (id) => {
+export const toggleImportanceOf = (data) => {
   return {
     type: 'TOGGLE_IMPORTANCE',
-    data: { id },
+    data,
   };
 };
 
