@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import noteService from './services/notes';
 import { initNotes } from './reducers/noteReducer';
 
 import NewNote from './components/NewNote';
@@ -11,7 +10,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    noteService.getAll().then((notes) => dispatch(initNotes(notes)));
+    dispatch(initNotes());
   }, [dispatch]);
 
   return (
