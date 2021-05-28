@@ -22,3 +22,5 @@ const NewNote = (props) => {
 };
 
 export default NewNote;
+
+//new laptop hi
