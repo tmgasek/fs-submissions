@@ -16,7 +16,7 @@ const anecdoteReducer = (state = [], action) => {
   }
 };
 
-export const initAnecdotes = () => {
+export const initAnecdotesCreator = () => {
   return async (dispatch) => {
     const anecdotes = await anecdoteService.getAll();
     dispatch({
@@ -26,7 +26,7 @@ export const initAnecdotes = () => {
   };
 };
 
-export const voteCreator = (anecdote) => {
+export const voteIncrementCreator = (anecdote) => {
   return async (dispatch) => {
     const newObject = { ...anecdote, votes: anecdote.votes + 1 };
     const updatedAnecdote = await anecdoteService.updateVotes(
