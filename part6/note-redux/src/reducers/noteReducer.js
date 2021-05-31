@@ -40,11 +40,19 @@ export const createNote = (content) => {
   };
 };
 
-export const toggleImportanceOf = (data) => {
-  return {
-    type: 'TOGGLE_IMPORTANCE',
-    data,
+export const toggleImportanceOf = (note) => {
+  return async (dispatch) => {
+    const updatedNote = { ...note, important: !note.important };
+    noteService.changeImportance(updatedNote.id, updatedNote);
+    dispatch({
+      type: 'TOGGLE_IMPORTANCE',
+      data: note,
+    });
   };
 };
+
+/*
+LOOK UP SOLUTION 
+*/
 
 export default noteReducer;
