@@ -10,7 +10,7 @@ const AnecdoteForm = (props) => {
 
     props.anecdoteCreator(content);
 
-    setNotification(`note: ${content} added!`, 2000);
+    props.setNotification(`note: ${content} added!`, 2000);
   };
 
   return (
@@ -24,4 +24,6 @@ const AnecdoteForm = (props) => {
   );
 };
 
-export default connect(null, { anecdoteCreator })(AnecdoteForm);
+export default connect(null, { anecdoteCreator, setNotification })(
+  AnecdoteForm
+);

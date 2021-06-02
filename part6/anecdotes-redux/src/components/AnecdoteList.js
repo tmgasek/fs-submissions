@@ -8,10 +8,6 @@ const AnecdoteList = (props) => {
     props.voteIncrementCreator(anecdote);
 
     const voted = props.anecdotes.find((a) => a.id === anecdote.id);
-    // dispatch(notify(`voted for "${voted.content}"`));
-    // setTimeout(() => {
-    //   dispatch(notificationClear());
-    // }, 3000);
     props.setNotification(`voted for ${voted.content}`, 2000);
   };
 
