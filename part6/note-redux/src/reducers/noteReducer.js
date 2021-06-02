@@ -7,13 +7,9 @@ const noteReducer = (state = [], action) => {
     case 'NEW_NOTE':
       return [...state, action.data];
     case 'TOGGLE_IMPORTANCE': {
-      const id = action.data.id;
-      const noteToChange = state.find((note) => note.id === id);
-      const changedNote = {
-        ...noteToChange,
-        important: !noteToChange.important,
-      };
-      return state.map((note) => (note.id !== id ? note : changedNote));
+      return state.map((note) =>
+        note.id !== action.data.id ? note : action.data
+      );
     }
     default:
       return state;
@@ -46,7 +42,7 @@ export const toggleImportanceOf = (note) => {
     noteService.changeImportance(updatedNote.id, updatedNote);
     dispatch({
       type: 'TOGGLE_IMPORTANCE',
-      data: note,
+      data: updatedNote,
     });
   };
 };
