@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Link,
   useParams,
-  Redirect,
   useHistory,
+  useRouteMatch,
 } from 'react-router-dom';
 
 const Menu = () => {
@@ -28,10 +27,7 @@ const Menu = () => {
   );
 };
 
-const Anecdote = ({ anecdotes }) => {
-  const id = useParams().id;
-  const anecdote = anecdotes.find((a) => a.id === id);
-  console.log(anecdote);
+const Anecdote = ({ anecdote }) => {
   return (
     <div>
       <div>{anecdote.content}</div>
@@ -193,29 +189,34 @@ const App = () => {
     setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
   };
 
+  const match = useRouteMatch('/anecdotes/:id');
+  console.log(match);
+  const anecdote = match
+    ? anecdotes.find((a) => a.id === match.params.id)
+    : null;
+
   return (
-    <Router>
-      <div>
-        <h1>Software anecdotes</h1>
-        {notification && <Notification notification={notification} />}
-        <Menu />
-        <Switch>
-          <Route path="/anecdotes/:id">
-            <Anecdote anecdotes={anecdotes} />
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/create">
-            <CreateNew addNew={addNew} />
-          </Route>
-          <Route path="/">
-            <AnecdoteList anecdotes={anecdotes} />
-          </Route>
-        </Switch>
-        <Footer />
-      </div>
-    </Router>
+    <div>
+      <h1>Software anecdotes</h1>
+      {notification && <Notification notification={notification} />}
+      <Menu />
+      <Switch>
+        <Route path="/anecdotes/:id">
+          <Anecdote anecdote={anecdote} />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/create">
+          <CreateNew addNew={addNew} />
+        </Route>
+        <Route path="/">
+          <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+      </Switch>
+      <br />
+      <Footer />
+    </div>
   );
 };
 
