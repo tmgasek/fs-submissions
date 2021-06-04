@@ -3,7 +3,7 @@ import {
   Switch,
   Route,
   Link,
-  useParams,
+  // useParams,
   useHistory,
   useRouteMatch,
 } from 'react-router-dom';
@@ -175,9 +175,10 @@ const App = () => {
     setAnecdotes(anecdotes.concat(anecdote));
     notify(`${anecdote.content} added`);
   };
-
+  /* 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
 
+ 
   const vote = (id) => {
     const anecdote = anecdoteById(id);
 
@@ -188,7 +189,7 @@ const App = () => {
 
     setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
   };
-
+*/
   const match = useRouteMatch('/anecdotes/:id');
   console.log(match);
   const anecdote = match
