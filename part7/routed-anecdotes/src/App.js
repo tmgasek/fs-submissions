@@ -7,6 +7,7 @@ import {
   useHistory,
   useRouteMatch,
 } from 'react-router-dom';
+import { useField } from './hooks/hooks';
 
 const Menu = () => {
   const padding = {
@@ -88,21 +89,26 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('');
-  const [author, setAuthor] = useState('');
-  const [info, setInfo] = useState('');
-
+  const content = useField('text');
+  const author = useField('text');
+  const info = useField('text');
   const history = useHistory();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.attributes.value,
+      author: author.attributes.value,
+      info: info.attributes.value,
       votes: 0,
     });
     history.push('/');
+  };
+
+  const handleReset = () => {
+    content.reset();
+    author.reset();
+    info.reset();
   };
 
   return (
@@ -111,29 +117,20 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <input {...content.attributes} />
         </div>
         <div>
           author
-          <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          <input {...author.attributes} />
         </div>
         <div>
           url for more info
-          <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          <input {...info.attributes} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="reset" onClick={handleReset}>
+          reset
+        </button>
       </form>
     </div>
   );
@@ -191,7 +188,6 @@ const App = () => {
   };
 */
   const match = useRouteMatch('/anecdotes/:id');
-  console.log(match);
   const anecdote = match
     ? anecdotes.find((a) => a.id === match.params.id)
     : null;
