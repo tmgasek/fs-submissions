@@ -17,13 +17,12 @@ const useField = (type) => {
 
 const useCountry = (name) => {
   const [country, setCountry] = useState('');
-  const [found, setFound] = useState('');
+  const [found, setFound] = useState(false);
 
   useEffect(() => {
     axios
       .get(`https://restcountries.eu/rest/v2/name/${name}?fullText=true`)
       .then((response) => {
-        console.log(response.data[0]);
         setFound(true);
         setCountry(response.data[0]);
       })
@@ -31,17 +30,12 @@ const useCountry = (name) => {
   }, [name]);
 
   return {
-    //   c: {
-    //     found,
-    //     data: country,
-    //   },
     data: country,
     found,
   };
 };
 
 const Country = ({ country }) => {
-  console.log('cmp', country.data[0]);
   if (!country) {
     return null;
   }
