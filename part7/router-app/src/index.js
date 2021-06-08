@@ -6,30 +6,41 @@ import {
   Route,
   Link,
   Redirect,
-  useParams,
-  useHistory,
   useRouteMatch,
+  useHistory,
 } from 'react-router-dom';
-import { Table, Form, Button } from 'react-bootstrap';
+import {
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+  TextField,
+  Button,
+  AppBar,
+  Toolbar,
+  IconButton,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 
-const Home = () => {
-  return (
-    <div>
-      <h2>home page</h2>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam volutpat
-        feugiat erat, a eleifend lorem tempus vel. Lorem ipsum dolor sit amet,
-        consectetur adipiscing elit. Nunc viverra sit amet sapien at varius.
-        Etiam vehicula, odio sit amet ultrices dignissim, ex purus aliquam
-        tellus, sed imperdiet neque dui et nisl. Proin nec felis ac est luctus
-        eleifend. Pellentesque arcu arcu, pretium sed mollis non, tincidunt ac
-        nibh. Sed venenatis mattis porta. Nunc aliquet id dui sed placerat.
-        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
-        cubilia curae;
-      </p>
-    </div>
-  );
-};
+const Home = () => (
+  <div>
+    <h2>TKTL notes app</h2>
+    <p>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+      Lorem Ipsum has been the industry's standard dummy text ever since the
+      1500s, when an unknown printer took a galley of type and scrambled it to
+      make a type specimen book. It has survived not only five centuries, but
+      also the leap into electronic typesetting, remaining essentially
+      unchanged. It was popularised in the 1960s with the release of Letraset
+      sheets containing Lorem Ipsum passages, and more recently with desktop
+      publishing software like Aldus PageMaker including versions of Lorem
+      Ipsum.
+    </p>
+  </div>
+);
 
 const Note = ({ note }) => {
   return (
@@ -37,84 +48,76 @@ const Note = ({ note }) => {
       <h2>{note.content}</h2>
       <div>{note.user}</div>
       <div>
-        <strong>{note.important ? 'important' : ''}</strong>
+        <strong>{note.important ? 'tärkeä' : ''}</strong>
       </div>
     </div>
   );
 };
 
-const Notes = ({ notes }) => {
-  return (
-    // <div>
-    //   <h2>list of notes</h2>
-    //   <ul>
-    //     {notes.map((note) => (
-    //       <li key={note.id}>
-    //         <Link to={`/notes/${note.id}`}>{note.content}</Link>
-    //       </li>
-    //     ))}
-    //   </ul>
-    // </div>
-    <div>
-      <h2>Notes</h2>
-      <Table striped>
-        <tbody>
-          {notes.map((note) => (
-            <tr key={note.id}>
-              <td>
-                <Link to={`/notes/${note.id}`}>{note.content}</Link>
-              </td>
-              <td>{note.user}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
-  );
-};
+const Notes = ({ notes }) => (
+  <div>
+    <h2>Notes</h2>
 
-const Users = () => {
-  return (
-    <div>
-      <h2>list of users</h2>
-      <ul>
-        <li>user1</li>
-        <li>user2</li>
-        <li>user3</li>
-      </ul>
-    </div>
-  );
-};
+    <TableContainer component={Paper}>
+      <Table>
+        <TableBody>
+          {notes.map((note) => (
+            <TableRow key={note.id}>
+              <TableCell>
+                <Link to={`/notes/${note.id}`}>{note.content}</Link>
+              </TableCell>
+              <TableCell>{note.user}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </div>
+);
+
+const Users = () => (
+  <div>
+    <h2>TKTL notes app</h2>
+    <ul>
+      <li>Matti Luukkainen</li>
+      <li>Juha Tauriainen</li>
+      <li>Arto Hellas</li>
+    </ul>
+  </div>
+);
 
 const Login = (props) => {
   const history = useHistory();
 
   const onSubmit = (event) => {
     event.preventDefault();
-    props.onLogin(event.target.username.value);
+    props.onLogin('mluukkai');
     history.push('/');
   };
 
   return (
     <div>
       <h2>login</h2>
-      <Form onSubmit={onSubmit}>
-        <Form.Group>
-          <Form.Label>username:</Form.Label>
-          <Form.Control type="text" name="username" />
-          <Form.Label>password:</Form.Label>
-          <Form.Control type="password" />
-          <Button variant="primary" type="submit">
+      <form onSubmit={onSubmit}>
+        <div>
+          <TextField label="username" />
+        </div>
+        <div>
+          <TextField label="password" type="password" />
+        </div>
+        <div>
+          <Button variant="contained" color="primary" type="submit">
             login
           </Button>
-        </Form.Group>
-      </Form>
+        </div>
+      </form>
     </div>
   );
 };
 
 const App = () => {
-  const [notes, setNotes] = useState([
+  const [notes] = useState([
+    //SET NOTES
     {
       id: 1,
       content: 'HTML is easy',
@@ -136,9 +139,18 @@ const App = () => {
   ]);
 
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const login = (user) => {
     setUser(user);
+    setMessage(`welcome ${user}`);
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+  };
+
+  const padding = {
+    padding: 5,
   };
 
   const match = useRouteMatch('/notes/:id');
@@ -146,53 +158,54 @@ const App = () => {
     ? notes.find((note) => note.id === Number(match.params.id))
     : null;
 
-  const padding = {
-    padding: 5,
-  };
-
   return (
-    <div className="container">
+    <Container>
+      {message && <Alert severity="success">{message}</Alert>}
       <div>
-        <Link style={padding} to="/">
-          home
-        </Link>
-        <Link style={padding} to="/notes">
-          notes
-        </Link>
-        <Link style={padding} to="/users">
-          users
-        </Link>
-        {user ? (
-          <em>{user} logged in</em>
-        ) : (
-          <Link style={padding} to="/login">
-            login
-          </Link>
-        )}
-      </div>
+        <AppBar position="static">
+          <Toolbar>
+            <Button color="inherit" component={Link} to="/">
+              home
+            </Button>
+            <Button color="inherit" component={Link} to="/notes">
+              notes
+            </Button>
+            <Button color="inherit" component={Link} to="/users">
+              users
+            </Button>
+            {user ? (
+              <em>{user} logged in</em>
+            ) : (
+              <Button color="inherit" component={Link} to="/login">
+                login
+              </Button>
+            )}
+          </Toolbar>
+        </AppBar>
 
-      <Switch>
-        <Route path="/notes/:id">
-          <Note note={note} />
-        </Route>
-        <Route path="/notes">
-          <Notes notes={notes} />
-        </Route>
-        <Route path="/users">
-          {user ? <Users /> : <Redirect to="/login" />}
-        </Route>
-        <Route path="/login">
-          <Login onLogin={login} />
-        </Route>
-        <Route path="/">
-          <Home />
-        </Route>
-      </Switch>
-      <div>
-        <br />
-        <i>note app practice tmg</i>
+        <Switch>
+          <Route path="/notes/:id">
+            <Note note={note} />
+          </Route>
+          <Route path="/notes">
+            <Notes notes={notes} />
+          </Route>
+          <Route path="/users">
+            {user ? <Users /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/login">
+            <Login onLogin={login} />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+        <div>
+          <br />
+          <em>Note app, Department of Computer Science 2021</em>
+        </div>
       </div>
-    </div>
+    </Container>
   );
 };
 
