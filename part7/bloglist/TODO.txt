@@ -1,0 +1,3 @@
+reload page after login/logout
+OR
+update local storage to match newly logged usr after login

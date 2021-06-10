@@ -1,0 +1,61 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QgdXNlcm5hbWUgMiIsImlkIjoiNjA5MTEyMTgwNGE3Zjk2MWI2NGViY2Q5IiwiaWF0IjoxNjIwMTQ2OTE2fQ.6NiGKgzEDT3MUzxiyfS4U8NpvyhnIUhPiidD2J2_Njs
+
+{
+  "title": "DELETE ME",
+  "author": "test author",
+  "url": "test url",
+  "likes": 2,
+  "userId": "6091121804a7f961b64ebcd9"
+}
+
+###
+GET http://localhost:3001/api/blogs
+
+###
+DELETE http://localhost:3001/api/blogs/609e5f19ff2a7a58abd7ea69
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QgdXNlcm5hbWUgMiIsImlkIjoiNjA5MTEyMTgwNGE3Zjk2MWI2NGViY2Q5IiwiaWF0IjoxNjIwMTQ2OTE2fQ.6NiGKgzEDT3MUzxiyfS4U8NpvyhnIUhPiidD2J2_Njs
+
+###
+PUT  http://localhost:3001/api/blogs/608c0725b975bd126821a466
+Content-Type: application/json
+
+{
+    "title": "body.tiffle",
+    "author": "bod3y.author",
+    "url": "body.url",
+    "likes": "522"
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "part7",
+  "name": "part7",
+  "password": "pass"
+}
+
+### 
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "test username 2",
+  "password": "pass2"
+}
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QgdXNlcm5hbWUgMiIsImlkIjoiNjA5MTEyMTgwNGE3Zjk2MWI2NGViY2Q5IiwiaWF0IjoxNjIwMTQ2OTE2fQ.6NiGKgzEDT3MUzxiyfS4U8NpvyhnIUhPiidD2J2_Njs
+
+{
+    "title": "token working 4.22",
+    "author": "author",
+    "url": "url",
+    "likes": 9,
+    "userId": "6091121804a7f961b64ebcd9"
+}
