@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import BlogForm from './components/BlogForm';
-import BlogList from './components/BlogList';
+import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import storage from './utils/storage';
 
 const App = () => {
   const [message, setMessage] = useState({
@@ -19,27 +20,13 @@ const App = () => {
   const blogFormRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(sortBlogs(blogs)));
+    blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
   useEffect(() => {
-    const loggedInUserJSON = window.localStorage.getItem('loggedInUser');
-    if (loggedInUserJSON) {
-      const user = JSON.parse(loggedInUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
+    const user = storage.loadUser();
+    setUser(user);
   }, []);
-
-  const sortBlogs = (blogsArr) => {
-    const sortedBlogs = blogsArr.sort((a, b) => {
-      const aLikes = a.likes;
-      const bLikes = b.likes;
-
-      return bLikes - aLikes;
-    });
-    return sortedBlogs;
-  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -50,7 +37,7 @@ const App = () => {
         password,
       });
       setUser(user);
-      window.localStorage.setItem('loggedInUser', JSON.stringify(user));
+      storage.saveUser(user);
       setMessage({
         type: 'success',
         content: `${user.username} logged in successfully`,
@@ -60,8 +47,6 @@ const App = () => {
       }, 3000);
       setUsername('');
       setPassword('');
-
-      console.log(user);
     } catch (exception) {
       setMessage({ type: 'error', content: 'wrong username / password' });
       setTimeout(() => {
@@ -83,22 +68,27 @@ const App = () => {
     }, 3000);
   };
 
-  const updateBlog = async (id, blogObject) => {
-    const returnedBlog = await blogService.update(id, blogObject);
+  const handleLike = async (id) => {
+    const blogToLike = blogs.find((blog) => blog.id === id);
+    const likedBlog = {
+      ...blogToLike,
+      likes: blogToLike.likes + 1,
+    };
+    await blogService.update(id, likedBlog);
     const updatedBlogs = blogs.map((blog) =>
-      blog.id !== id ? blog : returnedBlog
+      blog.id === id ? likedBlog : blog
     );
-    setBlogs(sortBlogs(updatedBlogs));
+    setBlogs(updatedBlogs);
   };
 
-  const deleteBlog = async (id) => {
+  const handleRemove = async (id) => {
     await blogService.remove(id);
     const updatedBlogs = blogs.filter((b) => b.id !== id);
-    setBlogs(sortBlogs(updatedBlogs));
+    setBlogs(updatedBlogs);
   };
 
   const logOut = () => {
-    window.localStorage.removeItem('loggedInUser');
+    storage.logoutUser();
     setUser(null);
     console.log('logged out');
     //set message logged out
@@ -118,13 +108,6 @@ const App = () => {
     );
   };
 
-  const blogForm = () => {
-    return (
-      <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-        <BlogForm createBlog={addBlog} />
-      </Toggleable>
-    );
-  };
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <div>
@@ -137,13 +120,23 @@ const App = () => {
           <button id="logOutBtn" onClick={logOut}>
             log out
           </button>
-          {blogForm()}
-          <BlogList
-            user={user}
-            blogs={blogs}
-            updateLikes={updateBlog}
-            deleteBlog={deleteBlog}
-          />
+          <Toggleable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+          </Toggleable>
+          <div>
+            <h2>blogs</h2>
+            {blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map((blog) => (
+                <Blog
+                  key={blog.id}
+                  own={user.username === blog.user.username}
+                  blog={blog}
+                  handleLike={handleLike}
+                  handleRemove={handleRemove}
+                />
+              ))}
+          </div>
         </div>
       )}
     </div>
