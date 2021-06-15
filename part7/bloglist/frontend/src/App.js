@@ -4,25 +4,25 @@ import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
-import blogService from './services/blogs';
 import loginService from './services/login';
 import storage from './utils/storage';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setNotification } from './reducers/notificationReducer';
+import { initBlogs } from './reducers/blogReducer';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const blogFormRef = useRef();
 
   const dispatch = useDispatch();
+  const blogs = useSelector((state) => state.blogs);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    dispatch(initBlogs());
+  }, [dispatch]);
 
   useEffect(() => {
     const user = storage.loadUser();
@@ -53,38 +53,17 @@ const App = () => {
     }
   };
 
-  const addBlog = async (blogObject) => {
-    const returnedBlog = await blogService.create(blogObject);
-    setBlogs(blogs.concat(returnedBlog));
-    blogFormRef.current.toggleVisibility();
-    dispatch(
-      setNotification(
-        'success',
-        `${returnedBlog.title} by ${returnedBlog.author} has been added.`,
-        3000
-      )
-    );
-  };
-
-  const handleLike = async (id) => {
-    const blogToLike = blogs.find((blog) => blog.id === id);
-    const likedBlog = {
-      ...blogToLike,
-      likes: blogToLike.likes + 1,
-    };
-    await blogService.update(id, likedBlog);
-    const updatedBlogs = blogs.map((blog) =>
-      blog.id === id ? likedBlog : blog
-    );
-    dispatch(setNotification('success', 'hello', 2000));
-    setBlogs(updatedBlogs);
-  };
-
-  const handleRemove = async (id) => {
-    await blogService.remove(id);
-    const updatedBlogs = blogs.filter((b) => b.id !== id);
-    setBlogs(updatedBlogs);
-  };
+  // const createBlog = async (blogObject) => {
+  //   dispatch(createBlog(blogObject));
+  // blogFormRef.current.toggleVisibility();
+  // dispatch(
+  //   setNotification(
+  //     'success',
+  //     `${returnedBlog.title} by ${returnedBlog.author} has been added.`,
+  //     3000
+  //   )
+  // );
+  // };
 
   const logOut = () => {
     storage.logoutUser();
@@ -119,7 +98,7 @@ const App = () => {
             log out
           </button>
           <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
+            <BlogForm />
           </Toggleable>
           <div>
             <h2>blogs</h2>
@@ -130,8 +109,6 @@ const App = () => {
                   key={blog.id}
                   own={user.username === blog.user.username}
                   blog={blog}
-                  handleLike={handleLike}
-                  handleRemove={handleRemove}
                 />
               ))}
           </div>
