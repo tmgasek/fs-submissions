@@ -8,16 +8,17 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 import storage from './utils/storage';
 
+import { useDispatch } from 'react-redux';
+import { setNotification } from './reducers/notificationReducer';
+
 const App = () => {
-  const [message, setMessage] = useState({
-    type: '',
-    content: '',
-  });
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const blogFormRef = useRef();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -38,20 +39,17 @@ const App = () => {
       });
       setUser(user);
       storage.saveUser(user);
-      setMessage({
-        type: 'success',
-        content: `${user.username} logged in successfully`,
-      });
-      setTimeout(() => {
-        setMessage({});
-      }, 3000);
+      dispatch(
+        setNotification(
+          'success',
+          `${user.username} logged in successfully`,
+          3000
+        )
+      );
       setUsername('');
       setPassword('');
     } catch (exception) {
-      setMessage({ type: 'error', content: 'wrong username / password' });
-      setTimeout(() => {
-        setMessage({});
-      }, 3000);
+      dispatch(setNotification('error', 'wrong username / password', 3000));
     }
   };
 
@@ -59,13 +57,13 @@ const App = () => {
     const returnedBlog = await blogService.create(blogObject);
     setBlogs(blogs.concat(returnedBlog));
     blogFormRef.current.toggleVisibility();
-    setMessage({
-      type: 'success',
-      content: `${returnedBlog.title} by ${returnedBlog.author} has been added.`,
-    });
-    setTimeout(() => {
-      setMessage({});
-    }, 3000);
+    dispatch(
+      setNotification(
+        'success',
+        `${returnedBlog.title} by ${returnedBlog.author} has been added.`,
+        3000
+      )
+    );
   };
 
   const handleLike = async (id) => {
@@ -78,6 +76,7 @@ const App = () => {
     const updatedBlogs = blogs.map((blog) =>
       blog.id === id ? likedBlog : blog
     );
+    dispatch(setNotification('success', 'hello', 2000));
     setBlogs(updatedBlogs);
   };
 
@@ -91,7 +90,6 @@ const App = () => {
     storage.logoutUser();
     setUser(null);
     console.log('logged out');
-    //set message logged out
   };
 
   const loginForm = () => {
@@ -111,7 +109,7 @@ const App = () => {
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <div>
-      <Notification type={message.type} content={message.content} />
+      <Notification />
       {user === null ? (
         loginForm()
       ) : (

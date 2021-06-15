@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 const Blog = ({ blog, handleLike, handleRemove, own }) => {
-  // const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const blogStyle = {
     paddingTop: 10,
@@ -9,6 +9,8 @@ const Blog = ({ blog, handleLike, handleRemove, own }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  const label = visible ? 'hide' : 'view';
 
   const handleDeleteClick = () => {
     if (
@@ -19,15 +21,24 @@ const Blog = ({ blog, handleLike, handleRemove, own }) => {
   };
   return (
     <div className="blog" style={blogStyle}>
-      {blog.title} | by: {blog.author} <br /> {blog.url} by {blog.user.name}
-      <br /> <span id="likes">{blog.likes}</span>{' '}
-      <button id="likeBtn" onClick={() => handleLike(blog.id)}>
-        like
-      </button>
-      {own && (
-        <button id="deleteBtn" onClick={handleDeleteClick}>
-          delete
-        </button>
+      <div>
+        {blog.title} by {blog.author}{' '}
+        <button onClick={() => setVisible(!visible)}>{label}</button>
+      </div>
+      {visible && (
+        <div>
+          <div> {blog.url}</div>
+          <div>op: {blog.user.name} </div>
+          <div id="likes">{blog.likes} likes</div>
+          <button id="likeBtn" onClick={() => handleLike(blog.id)}>
+            like
+          </button>
+          {own && (
+            <button id="deleteBtn" onClick={handleDeleteClick}>
+              delete
+            </button>
+          )}
+        </div>
       )}
     </div>
   );
