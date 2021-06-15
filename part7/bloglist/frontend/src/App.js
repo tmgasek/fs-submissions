@@ -4,41 +4,44 @@ import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
-import loginService from './services/login';
-import storage from './utils/storage';
-
+// import loginService from './services/login';
+// import storage from './utils/storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { setNotification } from './reducers/notificationReducer';
 import { initBlogs } from './reducers/blogReducer';
+import { loginUser, loadUser, logoutUser } from './reducers/userReducer';
 
 const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
+
   const blogFormRef = useRef();
 
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
+  const user = useSelector((state) => state.users);
+
+  console.log('redux users', user);
 
   useEffect(() => {
     dispatch(initBlogs());
   }, [dispatch]);
 
   useEffect(() => {
-    const user = storage.loadUser();
-    setUser(user);
+    dispatch(loadUser());
   }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      setUser(user);
-      storage.saveUser(user);
+      dispatch(
+        loginUser({
+          username,
+          password,
+        })
+      );
+
       dispatch(
         setNotification(
           'success',
@@ -66,8 +69,7 @@ const App = () => {
   // };
 
   const logOut = () => {
-    storage.logoutUser();
-    setUser(null);
+    dispatch(logoutUser());
     console.log('logged out');
   };
 
