@@ -42,22 +42,26 @@ export const createBlog = (content) => {
 export const likeBlog = (blog) => {
   return async (dispatch) => {
     const newBlog = { ...blog, likes: blog.likes + 1 };
-    const updatedBlog = await blogService.update(blog.id, newBlog);
+    blogService.update(newBlog);
     dispatch({
       type: 'LIKE',
-      data: updatedBlog,
+      data: newBlog,
     });
   };
 };
 
 export const deleteBlog = (blog) => {
   return async (dispatch) => {
-    await blogService.remove(blog.id);
-    dispatch({
-      type: 'DELETE',
-      data: blog,
-    });
-    dispatch(setNotification('success', `${blog.title} removed`, 3000));
+    try {
+      await blogService.remove(blog.id);
+      dispatch({
+        type: 'DELETE',
+        data: blog,
+      });
+      dispatch(setNotification('success', `${blog.title} removed`, 3000));
+    } catch (exception) {
+      dispatch(setNotification('error', 'you are not the OP', 3000));
+    }
   };
 };
 

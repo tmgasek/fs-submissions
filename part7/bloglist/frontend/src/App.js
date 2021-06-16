@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import BlogForm from './components/BlogForm';
-import Blog from './components/Blog';
+// import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { initBlogs } from './reducers/blogReducer';
 
 import { loginUser, loadUser, logoutUser } from './reducers/loginReducer';
+import Blogs from './components/Blogs';
 
 const App = () => {
   const [username, setUsername] = useState('');
@@ -61,6 +62,9 @@ const App = () => {
     );
   };
 
+  // const handleLike = (blog) => {
+  //   dispatch(likeBlog(blog));
+  // };
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <div>
@@ -77,7 +81,7 @@ const App = () => {
             <BlogForm />
           </Toggleable>
           <div>
-            <h2>blogs</h2>
+            {/* <h2>blogs</h2>
             {blogs
               .sort((a, b) => b.likes - a.likes)
               .map((blog) => (
@@ -85,8 +89,10 @@ const App = () => {
                   key={blog.id}
                   own={user.username === blog.user.username}
                   blog={blog}
+                  handleLike={handleLike}
                 />
-              ))}
+              ))} */}
+            <Blogs blogs={blogs} user={user} />
           </div>
         </div>
       )}
