@@ -7,8 +7,9 @@ import Toggleable from './components/Toggleable';
 // import loginService from './services/login';
 // import storage from './utils/storage';
 import { useDispatch, useSelector } from 'react-redux';
-import { setNotification } from './reducers/notificationReducer';
+// import { setNotification } from './reducers/notificationReducer';
 import { initBlogs } from './reducers/blogReducer';
+
 import { loginUser, loadUser, logoutUser } from './reducers/userReducer';
 
 const App = () => {
@@ -21,8 +22,6 @@ const App = () => {
   const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.users);
 
-  console.log('redux users', user);
-
   useEffect(() => {
     dispatch(initBlogs());
   }, [dispatch]);
@@ -33,40 +32,15 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-
-    try {
-      dispatch(
-        loginUser({
-          username,
-          password,
-        })
-      );
-
-      dispatch(
-        setNotification(
-          'success',
-          `${user.username} logged in successfully`,
-          3000
-        )
-      );
-      setUsername('');
-      setPassword('');
-    } catch (exception) {
-      dispatch(setNotification('error', 'wrong username / password', 3000));
-    }
+    dispatch(
+      loginUser({
+        username,
+        password,
+      })
+    );
+    setUsername('');
+    setPassword('');
   };
-
-  // const createBlog = async (blogObject) => {
-  //   dispatch(createBlog(blogObject));
-  // blogFormRef.current.toggleVisibility();
-  // dispatch(
-  //   setNotification(
-  //     'success',
-  //     `${returnedBlog.title} by ${returnedBlog.author} has been added.`,
-  //     3000
-  //   )
-  // );
-  // };
 
   const logOut = () => {
     dispatch(logoutUser());

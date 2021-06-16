@@ -1,4 +1,5 @@
 import blogService from '../services/blogs';
+import { setNotification } from './notificationReducer';
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {
@@ -34,6 +35,7 @@ export const createBlog = (content) => {
       type: 'CREATE',
       data: newBlog,
     });
+    dispatch(setNotification('success', `${newBlog.title} created`, 3000));
   };
 };
 
@@ -55,6 +57,7 @@ export const deleteBlog = (blog) => {
       type: 'DELETE',
       data: blog,
     });
+    dispatch(setNotification('success', `${blog.title} removed`, 3000));
   };
 };
 
