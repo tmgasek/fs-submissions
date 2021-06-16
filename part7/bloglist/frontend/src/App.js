@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // import { setNotification } from './reducers/notificationReducer';
 import { initBlogs } from './reducers/blogReducer';
 
-import { loginUser, loadUser, logoutUser } from './reducers/userReducer';
+import { loginUser, loadUser, logoutUser } from './reducers/loginReducer';
 
 const App = () => {
   const [username, setUsername] = useState('');

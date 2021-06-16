@@ -2,7 +2,7 @@ import loginService from '../services/login';
 import storage from '../utils/storage';
 import { setNotification } from './notificationReducer';
 
-const userReducer = (state = null, action) => {
+const loginReducer = (state = null, action) => {
   switch (action.type) {
     case 'LOAD':
       return action.data;
@@ -60,4 +60,4 @@ export const logoutUser = () => {
     dispatch(setNotification('success', 'logged out successfully', 3000));
   };
 };
-export default userReducer;
+export default loginReducer;
