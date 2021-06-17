@@ -1,19 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
-import Toggleable from './components/Toggleable';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { initBlogs } from './reducers/blogReducer';
-import { loginUser, loadUser, logoutUser } from './reducers/currUser';
+import { loadUser, logoutUser } from './reducers/currUser';
 import Blogs from './components/Blogs';
 
 const App = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const blogFormRef = useRef();
-
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
   const currUser = useSelector((state) => state.currUser);
@@ -26,54 +21,24 @@ const App = () => {
     dispatch(loadUser());
   }, []);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    dispatch(
-      loginUser({
-        username,
-        password,
-      })
-    );
-    setUsername('');
-    setPassword('');
-  };
-
   const logOut = () => {
     dispatch(logoutUser());
     console.log('logged out');
-  };
-
-  const loginForm = () => {
-    return (
-      <Toggleable buttonLabel="login">
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          password={password}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-        />
-      </Toggleable>
-    );
   };
 
   return (
     <div>
       <Notification />
       {currUser === null ? (
-        loginForm()
+        <LoginForm />
       ) : (
         <div>
           <p>{currUser.name} logged in</p>
           <button id="logOutBtn" onClick={logOut}>
             log out
           </button>
-          <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm />
-          </Toggleable>
-          <div>
-            <Blogs blogs={blogs} user={currUser} />
-          </div>
+          <BlogForm />
+          <Blogs blogs={blogs} user={currUser} />
         </div>
       )}
     </div>
