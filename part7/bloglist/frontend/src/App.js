@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+
+import { initBlogs } from './reducers/blogReducer';
+import { loadUser, logoutUser } from './reducers/currUser';
+
+import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
-
-import { useDispatch, useSelector } from 'react-redux';
-import { initBlogs } from './reducers/blogReducer';
-import { loadUser, logoutUser } from './reducers/currUser';
-import Blogs from './components/Blogs';
+import Users from './components/Users';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -28,19 +31,33 @@ const App = () => {
 
   return (
     <div>
-      <Notification />
-      {currUser === null ? (
-        <LoginForm />
-      ) : (
+      <Router>
         <div>
-          <p>{currUser.name} logged in</p>
-          <button id="logOutBtn" onClick={logOut}>
-            log out
-          </button>
-          <BlogForm />
-          <Blogs blogs={blogs} user={currUser} />
+          <Link to="/">home</Link>
+          <br></br>
+          <Link to="/users">users</Link>
         </div>
-      )}
+        <Switch>
+          <Route path="/users">
+            <Users />
+          </Route>
+          <Route path="/">
+            <Notification />
+            {currUser === null ? (
+              <LoginForm />
+            ) : (
+              <div>
+                <p>{currUser.name} logged in</p>
+                <button id="logOutBtn" onClick={logOut}>
+                  log out
+                </button>
+                <BlogForm />
+                <Blogs blogs={blogs} user={currUser} />
+              </div>
+            )}
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 };
