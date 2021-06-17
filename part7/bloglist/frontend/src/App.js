@@ -1,16 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import BlogForm from './components/BlogForm';
-// import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
-// import loginService from './services/login';
-// import storage from './utils/storage';
 import { useDispatch, useSelector } from 'react-redux';
-// import { setNotification } from './reducers/notificationReducer';
 import { initBlogs } from './reducers/blogReducer';
-
-import { loginUser, loadUser, logoutUser } from './reducers/loginReducer';
+import { loginUser, loadUser, logoutUser } from './reducers/currUser';
 import Blogs from './components/Blogs';
 
 const App = () => {
@@ -21,7 +16,7 @@ const App = () => {
 
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
-  const user = useSelector((state) => state.users);
+  const currUser = useSelector((state) => state.currUser);
 
   useEffect(() => {
     dispatch(initBlogs());
@@ -62,18 +57,14 @@ const App = () => {
     );
   };
 
-  // const handleLike = (blog) => {
-  //   dispatch(likeBlog(blog));
-  // };
-  ////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <div>
       <Notification />
-      {user === null ? (
+      {currUser === null ? (
         loginForm()
       ) : (
         <div>
-          <p>{user.name} logged in</p>
+          <p>{currUser.name} logged in</p>
           <button id="logOutBtn" onClick={logOut}>
             log out
           </button>
@@ -81,18 +72,7 @@ const App = () => {
             <BlogForm />
           </Toggleable>
           <div>
-            {/* <h2>blogs</h2>
-            {blogs
-              .sort((a, b) => b.likes - a.likes)
-              .map((blog) => (
-                <Blog
-                  key={blog.id}
-                  own={user.username === blog.user.username}
-                  blog={blog}
-                  handleLike={handleLike}
-                />
-              ))} */}
-            <Blogs blogs={blogs} user={user} />
+            <Blogs blogs={blogs} user={currUser} />
           </div>
         </div>
       )}
