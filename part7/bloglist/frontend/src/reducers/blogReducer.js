@@ -3,7 +3,7 @@ import { setNotification } from './notificationReducer';
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {
-    case 'INIT':
+    case 'INIT_BLOGS':
       return action.data;
     case 'CREATE':
       return [...state, action.data];
@@ -22,7 +22,7 @@ export const initBlogs = () => {
   return async (dispatch) => {
     const blogs = await blogService.getAll();
     dispatch({
-      type: 'INIT',
+      type: 'INIT_BLOGS',
       data: blogs,
     });
   };

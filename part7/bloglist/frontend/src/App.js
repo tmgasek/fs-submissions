@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import { initBlogs } from './reducers/blogReducer';
 import { loadUser, logoutUser } from './reducers/currUser';
+import { initUsers } from './reducers/usersReducer';
 
 import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
@@ -15,14 +16,19 @@ const App = () => {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
   const currUser = useSelector((state) => state.currUser);
+  const users = useSelector((state) => state.users);
 
   useEffect(() => {
     dispatch(initBlogs());
+    dispatch(initUsers());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(loadUser());
   }, []);
+
+  console.log('blogs', blogs);
+  console.log('users', users);
 
   const logOut = () => {
     dispatch(logoutUser());
