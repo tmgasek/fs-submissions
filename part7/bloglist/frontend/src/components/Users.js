@@ -1,16 +1,14 @@
 import React from 'react';
-// import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+const User = ({ user }) => {
+  return <div>{user.name}</div>;
+};
 
 const Users = () => {
-  // const users = useSelector((state) => state.users);
+  const users = useSelector((state) => state.users);
 
-  // const mapped = users.map((user) => user.name);
-  // console.log(mapped);
-  return (
-    <div>
-      <p>hello</p>
-    </div>
-  );
+  return users.map((user) => <User key={user.id} user={user} />);
 };
 
 export default Users;
