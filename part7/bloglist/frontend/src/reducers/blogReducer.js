@@ -1,5 +1,6 @@
 import blogService from '../services/blogs';
 import { setNotification } from './notificationReducer';
+// import { initUsers } from './usersReducer';
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {

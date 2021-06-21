@@ -36,12 +36,12 @@ const App = () => {
           <br></br>
           <Link to="/users">users</Link>
         </div>
+        <Notification />
         <Switch>
           <Route path="/users">
             <Users />
           </Route>
           <Route path="/">
-            <Notification />
             {currUser === null ? (
               <LoginForm />
             ) : (

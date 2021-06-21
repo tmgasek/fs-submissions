@@ -6,8 +6,6 @@ import Blog from './Blog';
 const Blogs = ({ blogs, user }) => {
   const dispatch = useDispatch();
 
-  console.log(blogs[0]);
-
   const handleLike = (blog) => {
     dispatch(likeBlog(blog));
   };

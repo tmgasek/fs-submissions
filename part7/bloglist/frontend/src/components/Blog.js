@@ -1,4 +1,5 @@
 import React from 'react';
+import blogService from '../services/blogs';
 
 const Blog = ({ own, blog, handleLike, handleDelete }) => {
   const blogStyle = {
@@ -7,6 +8,11 @@ const Blog = ({ own, blog, handleLike, handleDelete }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
+  };
+
+  const handleViewLog = async (id) => {
+    const singleView = await blogService.getOne(id);
+    console.log(singleView);
   };
 
   return (
@@ -26,6 +32,7 @@ const Blog = ({ own, blog, handleLike, handleDelete }) => {
             delete
           </button>
         )}
+        <button onClick={() => handleViewLog(blog.id)}>view</button>
       </div>
     </div>
   );
