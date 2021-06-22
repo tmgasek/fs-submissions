@@ -11,6 +11,7 @@ import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Users from './components/Users';
+import User from './components/User';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -38,6 +39,9 @@ const App = () => {
         </div>
         <Notification />
         <Switch>
+          <Route path="/users/:id">
+            <User />
+          </Route>
           <Route path="/users">
             <Users />
           </Route>

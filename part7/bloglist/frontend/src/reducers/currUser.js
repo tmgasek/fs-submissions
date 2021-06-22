@@ -16,12 +16,10 @@ const currUserReducer = (state = null, action) => {
 };
 
 export const loadUser = () => {
-  return async (dispatch) => {
-    const user = storage.loadUser();
-    dispatch({
-      type: 'LOAD',
-      data: user,
-    });
+  const user = storage.loadUser();
+  return {
+    type: 'LOAD',
+    data: user,
   };
 };
 

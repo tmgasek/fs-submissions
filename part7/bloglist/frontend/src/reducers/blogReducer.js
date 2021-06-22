@@ -1,6 +1,6 @@
 import blogService from '../services/blogs';
 import { setNotification } from './notificationReducer';
-// import { initUsers } from './usersReducer';
+import { addBlogToUser, removeBlogFromUser } from './usersReducer';
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {
@@ -36,6 +36,7 @@ export const createBlog = (content) => {
       type: 'CREATE',
       data: newBlog,
     });
+    dispatch(addBlogToUser(newBlog));
     dispatch(setNotification('success', `${newBlog.title} created`, 3000));
   };
 };
@@ -59,6 +60,7 @@ export const deleteBlog = (blog) => {
         type: 'DELETE',
         data: blog,
       });
+      dispatch(removeBlogFromUser(blog));
       dispatch(setNotification('success', `${blog.title} removed`, 3000));
     } catch (exception) {
       dispatch(setNotification('error', 'you are not the OP', 3000));
