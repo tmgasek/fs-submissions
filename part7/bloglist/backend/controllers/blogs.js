@@ -51,6 +51,17 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog);
 });
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const newComment = request.body.comments;
+
+  const blog = await Blog.findById(request.params.id);
+
+  blog.comments = blog.comments.concat(newComment);
+
+  const savedBlog = await blog.save();
+  response.status(201).json(savedBlog);
+});
+
 blogsRouter.delete('/:id', async (request, response) => {
   const decodedToken = jwt.verify(request.token, process.env.SECRET);
   if (!request.token || !decodedToken.id) {

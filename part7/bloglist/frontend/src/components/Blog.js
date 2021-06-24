@@ -13,6 +13,8 @@ const Blog = () => {
   const currUser = useSelector((state) => state.currUser);
   const blog = blogs.find((blog) => blog.id === id);
 
+  console.log(blog);
+
   const handleLike = (blog) => {
     dispatch(likeBlog(blog));
   };
@@ -33,6 +35,10 @@ const Blog = () => {
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  if (!blog) {
+    return null;
+  }
 
   return (
     <div className="blog" style={blogStyle}>
