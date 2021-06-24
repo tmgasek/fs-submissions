@@ -53,12 +53,13 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.post('/:id/comments', async (request, response) => {
   const newComment = request.body.comments;
-
+  console.log(newComment);
   const blog = await Blog.findById(request.params.id);
 
   blog.comments = blog.comments.concat(newComment);
 
   const savedBlog = await blog.save();
+
   response.status(201).json(savedBlog);
 });
 

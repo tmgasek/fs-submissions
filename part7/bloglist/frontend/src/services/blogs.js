@@ -9,6 +9,7 @@ const getAll = async () => {
 
 const getOne = async (id) => {
   const response = await axios.get(`${baseUrl}/${id}`);
+
   return response.data;
 };
 
@@ -17,6 +18,18 @@ const create = async (newObject) => {
     headers: { Authorization: `bearer ${storage.loadUser().token}` },
   };
   const response = await axios.post(baseUrl, newObject, config);
+  return response.data;
+};
+
+// const createComment = async (id, comment) => {
+//   console.log('comment', comment);
+//   const response = await axios.post(`${baseUrl}/${id}/comments`, comment);
+
+//   return response.data;
+// };
+
+const createComment = async (newObject) => {
+  const response = await axios.put(`${baseUrl}/${newObject.id}`, newObject);
   return response.data;
 };
 
@@ -36,6 +49,7 @@ const blogService = {
   getAll,
   getOne,
   create,
+  createComment,
   update,
   remove,
 };

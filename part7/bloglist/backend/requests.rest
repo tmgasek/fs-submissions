@@ -65,6 +65,5 @@ POST http://localhost:3001/api/blogs/60d4e433c404e0705a10384b/comments
 Content-Type: application/json
 
 {
-
-  "comments": "comment number12"
+  "comments": "backend"
 }

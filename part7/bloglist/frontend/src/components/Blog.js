@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 
 import { useDispatch } from 'react-redux';
-import { likeBlog, deleteBlog } from '../reducers/blogReducer';
+import { likeBlog, deleteBlog, addComment } from '../reducers/blogReducer';
 
 const Blog = () => {
   const history = useHistory();
@@ -13,7 +13,7 @@ const Blog = () => {
   const currUser = useSelector((state) => state.currUser);
   const blog = blogs.find((blog) => blog.id === id);
 
-  console.log(blog);
+  const [comment, setComment] = useState('');
 
   const handleLike = (blog) => {
     dispatch(likeBlog(blog));
@@ -27,6 +27,14 @@ const Blog = () => {
       dispatch(deleteBlog(blog));
     }
   };
+
+  const handleCommentClick = async (e) => {
+    e.preventDefault();
+
+    dispatch(addComment(blog, comment));
+  };
+
+  console.log(blog);
 
   const blogStyle = {
     paddingTop: 10,
@@ -57,6 +65,19 @@ const Blog = () => {
             delete
           </button>
         )}
+        <form onSubmit={handleCommentClick}>
+          <input
+            value={comment}
+            onChange={({ target }) => setComment(target.value)}
+          />
+          <button type="submit">add comment</button>
+        </form>
+        <div>
+          <h2>comments</h2>
+          {blog.comments.map((c) => (
+            <div key={c}>{c}</div>
+          ))}
+        </div>
       </div>
     </div>
   );
