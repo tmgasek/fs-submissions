@@ -12,10 +12,10 @@ import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
 import Users from './components/Users';
 import User from './components/User';
+import Blog from './components/Blog';
 
 const App = () => {
   const dispatch = useDispatch();
-  const blogs = useSelector((state) => state.blogs);
   const currUser = useSelector((state) => state.currUser);
 
   useEffect(() => {
@@ -42,6 +42,9 @@ const App = () => {
           <Route path="/users/:id">
             <User />
           </Route>
+          <Route path="/blogs/:id">
+            <Blog />
+          </Route>
           <Route path="/users">
             <Users />
           </Route>
@@ -55,7 +58,7 @@ const App = () => {
                   log out
                 </button>
                 <BlogForm />
-                <Blogs blogs={blogs} user={currUser} />
+                <Blogs currUser={currUser} />
               </div>
             )}
           </Route>

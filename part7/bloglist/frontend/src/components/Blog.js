@@ -1,18 +1,37 @@
 import React from 'react';
-import blogService from '../services/blogs';
+import { useParams, useHistory } from 'react-router';
+import { useSelector } from 'react-redux';
 
-const Blog = ({ own, blog, handleLike, handleDelete }) => {
+import { useDispatch } from 'react-redux';
+import { likeBlog, deleteBlog } from '../reducers/blogReducer';
+
+const Blog = () => {
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const id = useParams().id;
+  const blogs = useSelector((state) => state.blogs);
+  const currUser = useSelector((state) => state.currUser);
+  const blog = blogs.find((blog) => blog.id === id);
+
+  const handleLike = (blog) => {
+    dispatch(likeBlog(blog));
+  };
+
+  const handleDelete = (blog) => {
+    if (
+      window.confirm(`do you want to delete ${blog.title} by ${blog.author}?`)
+    ) {
+      history.push('/');
+      dispatch(deleteBlog(blog));
+    }
+  };
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
-
-  const handleViewLog = async (id) => {
-    const singleView = await blogService.getOne(id);
-    console.log(singleView);
   };
 
   return (
@@ -27,12 +46,11 @@ const Blog = ({ own, blog, handleLike, handleDelete }) => {
         <button id="likeBtn" onClick={() => handleLike(blog)}>
           like
         </button>
-        {own && (
+        {currUser.name === blog.user.name && (
           <button id="deleteBtn" onClick={() => handleDelete(blog)}>
             delete
           </button>
         )}
-        <button onClick={() => handleViewLog(blog.id)}>view</button>
       </div>
     </div>
   );
