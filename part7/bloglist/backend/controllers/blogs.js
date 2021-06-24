@@ -39,6 +39,10 @@ blogsRouter.post('/', async (request, response) => {
     blog.likes = 0;
   }
 
+  if (!blog.comments) {
+    blog.comments = [];
+  }
+
   blog.user = user;
   const savedBlog = await blog.save();
 
@@ -77,6 +81,7 @@ blogsRouter.put('/:id', async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
+    comments: body.comments,
   };
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
