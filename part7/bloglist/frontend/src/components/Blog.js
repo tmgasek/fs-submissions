@@ -9,14 +9,13 @@ import {
   Button,
   Container,
   Card,
-  CardHeader,
   CardContent,
-  IconButton,
   Typography,
   CardActions,
   TextField,
 } from '@material-ui/core';
-import { useStyles } from '../App';
+
+import { useStyles } from './Layout';
 
 const Blog = () => {
   const history = useHistory();
@@ -89,14 +88,12 @@ const Blog = () => {
             )}
           </CardActions>
           <CardContent>
-            <Typography>
-              <Typography variant="h5">Comments</Typography>
-              {blog.comments.map((c) => (
-                <Typography variant="body2" key={c}>
-                  {c}
-                </Typography>
-              ))}
-            </Typography>
+            <Typography variant="h5">Comments</Typography>
+            {blog.comments.map((c) => (
+              <Typography variant="body2" key={c}>
+                {c}
+              </Typography>
+            ))}
           </CardContent>
           <CardActions>
             <form onSubmit={handleCommentClick}>
