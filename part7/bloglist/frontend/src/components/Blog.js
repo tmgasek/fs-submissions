@@ -5,6 +5,19 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { likeBlog, deleteBlog, addComment } from '../reducers/blogReducer';
 
+import {
+  Button,
+  Container,
+  Card,
+  CardHeader,
+  CardContent,
+  IconButton,
+  Typography,
+  CardActions,
+  TextField,
+} from '@material-ui/core';
+import { useStyles } from '../App';
+
 const Blog = () => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -14,6 +27,8 @@ const Blog = () => {
   const blog = blogs.find((blog) => blog.id === id);
 
   const [comment, setComment] = useState('');
+
+  const classes = useStyles();
 
   const handleLike = (blog) => {
     dispatch(likeBlog(blog));
@@ -36,49 +51,75 @@ const Blog = () => {
 
   console.log(blog);
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   if (!blog) {
     return null;
   }
 
   return (
-    <div className="blog" style={blogStyle}>
-      <div>
-        {blog.title} by {blog.author}{' '}
-      </div>
-      <div>
-        <div> {blog.url}</div>
-        <div>op: {blog.user.name} </div>
-        <div id="likes">{blog.likes} likes</div>
-        <button id="likeBtn" onClick={() => handleLike(blog)}>
-          like
-        </button>
-        {currUser.name === blog.user.name && (
-          <button id="deleteBtn" onClick={() => handleDelete(blog)}>
-            delete
-          </button>
-        )}
-        <form onSubmit={handleCommentClick}>
-          <input
-            value={comment}
-            onChange={({ target }) => setComment(target.value)}
-          />
-          <button type="submit">add comment</button>
-        </form>
-        <div>
-          <h2>comments</h2>
-          {blog.comments.map((c) => (
-            <div key={c}>{c}</div>
-          ))}
-        </div>
-      </div>
+    <div className="blog">
+      {/*//////////////////////////////////////*/}
+      <Container>
+        <Card variant="outlined">
+          <CardContent>
+            <Typography variant="h5">{blog.title}</Typography>
+            <Typography variant="body1">{blog.url}</Typography>
+            <Typography variant="body2">likes: {blog.likes}</Typography>
+            <Typography variant="body2">op: {blog.user.name}</Typography>
+          </CardContent>
+          <CardActions>
+            <Button
+              color="primary"
+              size="small"
+              variant="contained"
+              id="likeBtn"
+              onClick={() => handleLike(blog)}
+            >
+              like
+            </Button>
+            {currUser.name === blog.user.name && (
+              <Button
+                color="secondary"
+                size="small"
+                variant="contained"
+                id="deleteBtn"
+                onClick={() => handleDelete(blog)}
+              >
+                delete
+              </Button>
+            )}
+          </CardActions>
+          <CardContent>
+            <Typography>
+              <Typography variant="h5">Comments</Typography>
+              {blog.comments.map((c) => (
+                <Typography variant="body2" key={c}>
+                  {c}
+                </Typography>
+              ))}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <form onSubmit={handleCommentClick}>
+              <TextField
+                label="comment"
+                value={comment}
+                onChange={({ target }) => setComment(target.value)}
+              />
+              <div>
+                <Button
+                  className={classes.field}
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  type="submit"
+                >
+                  add comment
+                </Button>
+              </div>
+            </form>
+          </CardActions>
+        </Card>
+      </Container>
     </div>
   );
 };

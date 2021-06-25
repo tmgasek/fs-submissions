@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { createBlog } from '../reducers/blogReducer';
 import Toggleable from './Toggleable';
+import { Button } from '@material-ui/core';
 
 const BlogForm = () => {
   const [newTitle, setNewTitle] = useState('');
@@ -57,9 +58,15 @@ const BlogForm = () => {
               onChange={({ target }) => setNewUrl(target.value)}
             />
           </div>
-          <button id="submitBlogBtn" type="submit">
+          <Button
+            color="primary"
+            variant="contained"
+            size="small"
+            id="submitBlogBtn"
+            type="submit"
+          >
             save
-          </button>
+          </Button>
         </form>
       </div>
     </Toggleable>
