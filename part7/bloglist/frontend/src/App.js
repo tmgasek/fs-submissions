@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import { initBlogs } from './reducers/blogReducer';
 import { loadUser, logoutUser } from './reducers/currUser';
@@ -15,19 +15,27 @@ import User from './components/User';
 import Blog from './components/Blog';
 import Layout from './components/Layout';
 import {
-  Container,
   Button,
   createMuiTheme,
   ThemeProvider,
+  Typography,
+  AppBar,
+  Toolbar,
+  IconButton,
 } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+
 import { grey } from '@material-ui/core/colors';
-import { useStyles } from './components/Layout';
+import { useStyles } from './utils/styles';
 import { CssBaseline } from '@material-ui/core';
 
 const theme = createMuiTheme({
   palette: {
     background: {
-      default: '#f9f9f9',
+      default: '#E5E9F0',
+    },
+    primary: {
+      main: '#434C5E',
     },
     secondary: {
       main: grey[200],
@@ -56,50 +64,77 @@ const App = () => {
 
   const logOut = () => {
     dispatch(logoutUser());
-    console.log('logged out');
   };
 
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <CssBaseline />
+        <div className={classes.root}>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton
+                edge="start"
+                className={classes.menuButton}
+                color="inherit"
+                aria-label="menu"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" className={classes.heading}>
+                Bloglist App
+              </Typography>
+              <Typography>
+                <Link className={classes.heading} to="/">
+                  Home
+                </Link>
+              </Typography>
+              <Typography className={classes.lastItem}>
+                <Link className={classes.heading} to="/users">
+                  Users
+                </Link>
+              </Typography>
+              {currUser !== null && (
+                <>
+                  <Typography>
+                    <em>{currUser.name} logged in</em>
+                  </Typography>
+                  <Button
+                    className={classes.logOutBtn}
+                    id="logOutBtn"
+                    color="inherit"
+                    onClick={logOut}
+                  >
+                    log out
+                  </Button>
+                </>
+              )}
+            </Toolbar>
+          </AppBar>
+        </div>
         <Layout>
-          <Container>
-            <Notification />
-            <Switch>
-              <Route path="/users/:id">
-                <User />
-              </Route>
-              <Route path="/blogs/:id">
-                <Blog />
-              </Route>
-              <Route path="/users">
-                <Users />
-              </Route>
-              <Route path="/">
-                {currUser === null ? (
-                  <LoginForm />
-                ) : (
-                  <div>
-                    <p>{currUser.name} logged in</p>
-                    <Button
-                      className={classes.btn}
-                      color="secondary"
-                      variant="contained"
-                      size="small"
-                      id="logOutBtn"
-                      onClick={logOut}
-                    >
-                      log out
-                    </Button>
-
-                    <BlogForm />
-                    <Blogs currUser={currUser} />
-                  </div>
-                )}
-              </Route>
-            </Switch>
-          </Container>
+          <Notification />
+          <Switch>
+            <Route path="/users/:id">
+              <User />
+            </Route>
+            <Route path="/blogs/:id">
+              <Blog />
+            </Route>
+            <Route path="/users">
+              <Users />
+            </Route>
+            <Route path="/">
+              {currUser === null ? (
+                <LoginForm />
+              ) : (
+                <div>
+                  <BlogForm />
+                  <Blogs currUser={currUser} />
+                </div>
+              )}
+            </Route>
+          </Switch>
         </Layout>
       </Router>
     </ThemeProvider>

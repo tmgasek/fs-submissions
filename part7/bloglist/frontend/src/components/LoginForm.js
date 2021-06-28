@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import Toggleable from './Toggleable';
 import { Button } from '@material-ui/core';
 import { TextField } from '@material-ui/core';
-import { useStyles } from './Layout';
+import { useStyles } from '../utils/styles';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');

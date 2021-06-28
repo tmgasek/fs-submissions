@@ -15,7 +15,7 @@ import {
   TextField,
 } from '@material-ui/core';
 
-import { useStyles } from './Layout';
+import { useStyles } from '../utils/styles';
 
 const Blog = () => {
   const history = useHistory();
@@ -31,6 +31,7 @@ const Blog = () => {
 
   const handleLike = (blog) => {
     dispatch(likeBlog(blog));
+    console.log(currUser);
   };
 
   const handleDelete = (blog) => {
@@ -48,8 +49,6 @@ const Blog = () => {
     dispatch(addComment(blog, comment));
   };
 
-  console.log(blog);
-
   if (!blog) {
     return null;
   }
@@ -62,7 +61,9 @@ const Blog = () => {
           <CardContent>
             <Typography variant="h5">{blog.title}</Typography>
             <Typography variant="body1">{blog.url}</Typography>
-            <Typography variant="body2">likes: {blog.likes}</Typography>
+            <Typography id="likes" variant="body2">
+              likes: {blog.likes}
+            </Typography>
             <Typography variant="body2">op: {blog.user.name}</Typography>
           </CardContent>
           <CardActions>
@@ -75,6 +76,7 @@ const Blog = () => {
             >
               like
             </Button>
+
             {currUser.name === blog.user.name && (
               <Button
                 color="secondary"

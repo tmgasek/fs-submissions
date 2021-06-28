@@ -25,7 +25,7 @@ const Blogs = () => {
         {blogs
           .sort((a, b) => b.likes - a.likes)
           .map((blog) => (
-            <Grid item className="blog" key={blog.id} xs={12} md={6} lg={4}>
+            <Grid item id="blog" key={blog.id} xs={12} md={6} lg={4}>
               <BlogCard blog={blog}></BlogCard>
             </Grid>
           ))}

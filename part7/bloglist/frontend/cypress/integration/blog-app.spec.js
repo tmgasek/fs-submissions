@@ -59,7 +59,7 @@ describe('Blog app', function () {
       cy.get('#url').type('cypress test url');
       cy.get('#submitBlogBtn').click();
 
-      cy.contains('cypress test title | by: cypress test author');
+      cy.contains('cypress test title');
     });
 
     describe('and a blog exists', function () {
@@ -72,19 +72,16 @@ describe('Blog app', function () {
       });
 
       it('a blog can be liked', function () {
-        cy.get('#toDetailed').click();
+        cy.get('#blog').click();
         cy.get('#likeBtn').click();
         cy.get('#likes').contains('1');
       });
 
       it('a blog can be deleted by the creator', function () {
-        cy.get('#toDetailed').click();
+        cy.get('#blog').click();
         cy.get('#deleteBtn').click();
 
-        cy.get('html').should(
-          'not.contain',
-          'cypress test title | by: cypress test author'
-        );
+        cy.get('html').should('not.contain', 'cypress test title');
         cy.visit('http://localhost:3000');
       });
 
@@ -92,7 +89,7 @@ describe('Blog app', function () {
         cy.get('#logOutBtn').click();
         cy.login({ username: 'cy2', password: 'password2' });
         cy.contains('cypress2 logged in');
-        cy.get('#toDetailed').click();
+        cy.get('#blog').click();
         cy.get('html').should('not.contain', 'delete');
       });
     });
@@ -118,11 +115,11 @@ describe('Blog app', function () {
       });
 
       it('sorts by likes by default', function () {
-        cy.root().find('.blog').first().contains('cy title 3');
+        cy.root().find('#blog').first().contains('cy title 3');
       });
 
       it('sorts by likes after liking', function () {
-        cy.contains('cy title 2').contains('view details').click();
+        cy.contains('cy title 2').click();
         cy.get('#likeBtn')
           .click()
           .wait(500)
@@ -131,8 +128,9 @@ describe('Blog app', function () {
           .click()
           .wait(500);
 
+        cy.visit('http://localhost:3000');
         cy.root();
-        cy.root().find('.blog').first().contains('cy title 2');
+        cy.root().find('#blog').first().contains('cy title 2');
       });
     });
   });
