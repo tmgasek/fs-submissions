@@ -16,6 +16,7 @@ const blogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+  liked: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
 });
 
 blogSchema.set('toJSON', {

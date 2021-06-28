@@ -14,15 +14,6 @@ const User = () => {
   }
 
   return (
-    // <div>
-    //   <h2>{user.name}</h2>
-    //   <h3>added blogs</h3>
-    //   <ul>
-    //     {user.blogs.map((blog) => (
-    //       <li key={blog.id}>{blog.title}</li>
-    //     ))}
-    //   </ul>
-    // </div>
     <List>
       {user.blogs.map((blog) => (
         <ListItem key={blog.id}>
