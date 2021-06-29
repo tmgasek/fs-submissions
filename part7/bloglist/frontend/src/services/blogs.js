@@ -7,6 +7,12 @@ const getAll = async () => {
   return response.data;
 };
 
+const getOne = async (id) => {
+  const response = await axios.get(`${baseUrl}/${id}`);
+
+  return response.data;
+};
+
 const create = async (newObject) => {
   const config = {
     headers: { Authorization: `bearer ${storage.loadUser().token}` },
@@ -15,8 +21,13 @@ const create = async (newObject) => {
   return response.data;
 };
 
-const update = async (id, newObject) => {
-  const response = await axios.put(`${baseUrl}/${id}`, newObject);
+const createComment = async (newObject) => {
+  const response = await axios.put(`${baseUrl}/${newObject.id}`, newObject);
+  return response.data;
+};
+
+const update = async (newObject) => {
+  const response = await axios.put(`${baseUrl}/${newObject.id}`, newObject);
   return response.data;
 };
 
@@ -29,7 +40,9 @@ const remove = async (id) => {
 
 const blogService = {
   getAll,
+  getOne,
   create,
+  createComment,
   update,
   remove,
 };

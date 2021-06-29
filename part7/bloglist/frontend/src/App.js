@@ -1,145 +1,143 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+
+import { initBlogs } from './reducers/blogReducer';
+import { loadUser, logoutUser } from './reducers/currUser';
+import { initUsers } from './reducers/usersReducer';
+
+import Blogs from './components/Blogs';
 import BlogForm from './components/BlogForm';
-import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import Notification from './components/Notification';
-import Toggleable from './components/Toggleable';
-import blogService from './services/blogs';
-import loginService from './services/login';
-import storage from './utils/storage';
+import Users from './components/Users';
+import User from './components/User';
+import Blog from './components/Blog';
+import Layout from './components/Layout';
+import {
+  Button,
+  createMuiTheme,
+  ThemeProvider,
+  Typography,
+  AppBar,
+  Toolbar,
+  IconButton,
+} from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+
+import { grey } from '@material-ui/core/colors';
+import { useStyles } from './utils/styles';
+import { CssBaseline } from '@material-ui/core';
+
+const theme = createMuiTheme({
+  palette: {
+    background: {
+      default: '#E5E9F0',
+    },
+    primary: {
+      main: '#434C5E',
+    },
+    secondary: {
+      main: grey[200],
+    },
+  },
+  typography: {
+    fontFamily: 'Lato',
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+    fontWeightBold: 600,
+  },
+});
 
 const App = () => {
-  const [message, setMessage] = useState({
-    type: '',
-    content: '',
-  });
-  const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
-  const blogFormRef = useRef();
+  const classes = useStyles();
+
+  const dispatch = useDispatch();
+  const currUser = useSelector((state) => state.currUser);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
-
-  useEffect(() => {
-    const user = storage.loadUser();
-    setUser(user);
-  }, []);
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      setUser(user);
-      storage.saveUser(user);
-      setMessage({
-        type: 'success',
-        content: `${user.username} logged in successfully`,
-      });
-      setTimeout(() => {
-        setMessage({});
-      }, 3000);
-      setUsername('');
-      setPassword('');
-    } catch (exception) {
-      setMessage({ type: 'error', content: 'wrong username / password' });
-      setTimeout(() => {
-        setMessage({});
-      }, 3000);
-    }
-  };
-
-  const addBlog = async (blogObject) => {
-    const returnedBlog = await blogService.create(blogObject);
-    setBlogs(blogs.concat(returnedBlog));
-    blogFormRef.current.toggleVisibility();
-    setMessage({
-      type: 'success',
-      content: `${returnedBlog.title} by ${returnedBlog.author} has been added.`,
-    });
-    setTimeout(() => {
-      setMessage({});
-    }, 3000);
-  };
-
-  const handleLike = async (id) => {
-    const blogToLike = blogs.find((blog) => blog.id === id);
-    const likedBlog = {
-      ...blogToLike,
-      likes: blogToLike.likes + 1,
-    };
-    await blogService.update(id, likedBlog);
-    const updatedBlogs = blogs.map((blog) =>
-      blog.id === id ? likedBlog : blog
-    );
-    setBlogs(updatedBlogs);
-  };
-
-  const handleRemove = async (id) => {
-    await blogService.remove(id);
-    const updatedBlogs = blogs.filter((b) => b.id !== id);
-    setBlogs(updatedBlogs);
-  };
+    dispatch(loadUser());
+    dispatch(initBlogs());
+    dispatch(initUsers());
+  }, [dispatch]);
 
   const logOut = () => {
-    storage.logoutUser();
-    setUser(null);
-    console.log('logged out');
-    //set message logged out
+    dispatch(logoutUser());
   };
 
-  const loginForm = () => {
-    return (
-      <Toggleable buttonLabel="login">
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          password={password}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-        />
-      </Toggleable>
-    );
-  };
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////
   return (
-    <div>
-      <Notification type={message.type} content={message.content} />
-      {user === null ? (
-        loginForm()
-      ) : (
-        <div>
-          <p>{user.name} logged in</p>
-          <button id="logOutBtn" onClick={logOut}>
-            log out
-          </button>
-          <Toggleable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Toggleable>
-          <div>
-            <h2>blogs</h2>
-            {blogs
-              .sort((a, b) => b.likes - a.likes)
-              .map((blog) => (
-                <Blog
-                  key={blog.id}
-                  own={user.username === blog.user.username}
-                  blog={blog}
-                  handleLike={handleLike}
-                  handleRemove={handleRemove}
-                />
-              ))}
-          </div>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <CssBaseline />
+        <div className={classes.root}>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton
+                edge="start"
+                className={classes.menuButton}
+                color="inherit"
+                aria-label="menu"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" className={classes.heading}>
+                Bloglist App
+              </Typography>
+              <Typography>
+                <Link className={classes.heading} to="/">
+                  Home
+                </Link>
+              </Typography>
+              <Typography className={classes.lastItem}>
+                <Link className={classes.heading} to="/users">
+                  Users
+                </Link>
+              </Typography>
+              {currUser !== null && (
+                <>
+                  <Typography>
+                    <em>{currUser.name} logged in</em>
+                  </Typography>
+                  <Button
+                    className={classes.logOutBtn}
+                    id="logOutBtn"
+                    color="inherit"
+                    onClick={logOut}
+                  >
+                    log out
+                  </Button>
+                </>
+              )}
+            </Toolbar>
+          </AppBar>
         </div>
-      )}
-    </div>
+        <Layout>
+          <Notification />
+          <Switch>
+            <Route path="/users/:id">
+              <User />
+            </Route>
+            <Route path="/blogs/:id">
+              <Blog />
+            </Route>
+            <Route path="/users">
+              <Users />
+            </Route>
+            <Route path="/">
+              {currUser === null ? (
+                <LoginForm />
+              ) : (
+                <div>
+                  <BlogForm />
+                  <Blogs currUser={currUser} />
+                </div>
+              )}
+            </Route>
+          </Switch>
+        </Layout>
+      </Router>
+    </ThemeProvider>
   );
 };
 export default App;

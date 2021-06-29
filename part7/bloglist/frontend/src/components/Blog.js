@@ -1,34 +1,127 @@
-import React from 'react';
-const Blog = ({ blog, handleLike, handleRemove, own }) => {
-  // const [visible, setVisible] = useState(false);
+import React, { useState } from 'react';
+import { useParams, useHistory } from 'react-router';
+import { useSelector } from 'react-redux';
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
+import { useDispatch } from 'react-redux';
+import { likeBlog, deleteBlog, addComment } from '../reducers/blogReducer';
+
+import {
+  Button,
+  Container,
+  Card,
+  CardContent,
+  Typography,
+  CardActions,
+  TextField,
+} from '@material-ui/core';
+
+import { useStyles } from '../utils/styles';
+
+const Blog = () => {
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const id = useParams().id;
+  const blogs = useSelector((state) => state.blogs);
+  const currUser = useSelector((state) => state.currUser);
+  const blog = blogs.find((blog) => blog.id === id);
+
+  const [comment, setComment] = useState('');
+
+  const classes = useStyles();
+
+  const handleLike = (blog) => {
+    dispatch(likeBlog(blog));
   };
 
-  const handleDeleteClick = () => {
+  const handleDelete = (blog) => {
     if (
       window.confirm(`do you want to delete ${blog.title} by ${blog.author}?`)
     ) {
-      handleRemove(blog.id);
+      history.push('/');
+      dispatch(deleteBlog(blog));
     }
   };
+
+  const handleCommentClick = async (e) => {
+    e.preventDefault();
+
+    dispatch(addComment(blog, comment));
+    setComment('');
+  };
+
+  const ID = function () {
+    return '_' + Math.random().toString(36).substr(2, 9);
+  };
+
+  if (!blog) {
+    return null;
+  }
+
   return (
-    <div className="blog" style={blogStyle}>
-      {blog.title} | by: {blog.author} <br /> {blog.url} by {blog.user.name}
-      <br /> <span id="likes">{blog.likes}</span>{' '}
-      <button id="likeBtn" onClick={() => handleLike(blog.id)}>
-        like
-      </button>
-      {own && (
-        <button id="deleteBtn" onClick={handleDeleteClick}>
-          delete
-        </button>
-      )}
+    <div className="blog">
+      <Container>
+        <Card variant="outlined">
+          <CardContent>
+            <Typography variant="h5">{blog.title}</Typography>
+            <Typography variant="body1">{blog.url}</Typography>
+            <Typography id="likes" variant="body2">
+              likes: {blog.likes}
+            </Typography>
+            <Typography variant="body2">op: {blog.user.name}</Typography>
+          </CardContent>
+          <CardActions>
+            <Button
+              color="primary"
+              size="small"
+              variant="contained"
+              id="likeBtn"
+              onClick={() => handleLike(blog)}
+            >
+              like
+            </Button>
+
+            {currUser.name === blog.user.name && (
+              <Button
+                color="secondary"
+                size="small"
+                variant="contained"
+                id="deleteBtn"
+                onClick={() => handleDelete(blog)}
+              >
+                delete
+              </Button>
+            )}
+          </CardActions>
+          <CardContent>
+            <Typography variant="h5">Comments</Typography>
+            {blog.comments.map((c) => (
+              <Typography variant="body2" key={ID()}>
+                {c}
+              </Typography>
+            ))}
+          </CardContent>
+          <CardActions>
+            <form onSubmit={handleCommentClick}>
+              <TextField
+                label="comment"
+                value={comment}
+                onChange={({ target }) => setComment(target.value)}
+              />
+              <div>
+                <Button
+                  className={classes.field}
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  type="submit"
+                >
+                  add comment
+                </Button>
+              </div>
+            </form>
+          </CardActions>
+        </Card>
+      </Container>
     </div>
   );
 };
