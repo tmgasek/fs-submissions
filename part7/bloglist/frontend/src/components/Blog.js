@@ -46,6 +46,11 @@ const Blog = () => {
     e.preventDefault();
 
     dispatch(addComment(blog, comment));
+    setComment('');
+  };
+
+  const ID = function () {
+    return '_' + Math.random().toString(36).substr(2, 9);
   };
 
   if (!blog) {
@@ -54,7 +59,6 @@ const Blog = () => {
 
   return (
     <div className="blog">
-      {/*//////////////////////////////////////*/}
       <Container>
         <Card variant="outlined">
           <CardContent>
@@ -91,7 +95,7 @@ const Blog = () => {
           <CardContent>
             <Typography variant="h5">Comments</Typography>
             {blog.comments.map((c) => (
-              <Typography variant="body2" key={c}>
+              <Typography variant="body2" key={ID()}>
                 {c}
               </Typography>
             ))}
