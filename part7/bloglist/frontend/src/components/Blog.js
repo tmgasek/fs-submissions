@@ -24,14 +24,13 @@ const Blog = () => {
   const blogs = useSelector((state) => state.blogs);
   const currUser = useSelector((state) => state.currUser);
   const blog = blogs.find((blog) => blog.id === id);
-  console.log(blog);
+
   const [comment, setComment] = useState('');
 
   const classes = useStyles();
 
   const handleLike = (blog) => {
     dispatch(likeBlog(blog));
-    console.log(currUser);
   };
 
   const handleDelete = (blog) => {

@@ -67,11 +67,3 @@ Content-Type: application/json
 {
   "comments": "backend"
 }
-
-###
-POST http://localhost:3001/api/blogs/60da0397e4c0c130b6174a85/liked
-Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzcjEiLCJpZCI6IjYwYzM0Mzk3OWU3M2VlMjVjYjIyZWM5ZSIsImlhdCI6MTYyNDY0Mzg1MX0.AomrUr4GOoI3623QRlOjykPo9qvxEWhuqCNVIFv31IU
-
-{
-}
