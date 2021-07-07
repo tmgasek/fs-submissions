@@ -7,7 +7,6 @@ import {
   ApolloProvider,
   HttpLink,
   InMemoryCache,
-  gql,
 } from '@apollo/client';
 
 const client = new ApolloClient({
@@ -16,22 +15,6 @@ const client = new ApolloClient({
     uri: 'http://localhost:4000',
   }),
 });
-
-const query = gql`
-  query {
-    allPersons {
-      name
-      phone
-      address {
-        street
-        city
-      }
-      id
-    }
-  }
-`;
-
-client.query({ query }).then((response) => console.log(response.data));
 
 ReactDOM.render(
   <ApolloProvider client={client}>
