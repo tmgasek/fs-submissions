@@ -4,7 +4,6 @@ const Books = ({ show, result }) => {
   if (!show) {
     return null;
   }
-  console.log(result.data.allBooks);
 
   const books = result.data.allBooks;
 
