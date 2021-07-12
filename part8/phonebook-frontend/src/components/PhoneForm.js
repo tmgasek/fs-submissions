@@ -18,7 +18,7 @@ const PhoneForm = ({ setError }) => {
   };
 
   useEffect(() => {
-    console.log(result);
+    // console.log(result);
     if (result.data && result.data.editNumber === null) {
       setError('person not found');
     }
