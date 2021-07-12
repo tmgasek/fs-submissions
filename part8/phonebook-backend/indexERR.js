@@ -27,21 +27,11 @@ mongoose
   });
 
 const typeDefs = gql`
-  type Person {
-    name: String!
-    phone: String
-    address: Address!
-    id: ID!
-  }
-  type Address {
-    street: String!
-    city: String!
-  }
-
   enum YesNo {
     YES
     NO
   }
+
   type User {
     username: String!
     friends: [Person!]!
@@ -51,12 +41,26 @@ const typeDefs = gql`
   type Token {
     value: String!
   }
+
+  type Address {
+    street: String!
+    city: String!
+  }
+
+  type Person {
+    name: String!
+    phone: String
+    address: Address!
+    id: ID!
+  }
+
   type Query {
     personCount: Int!
     allPersons(phone: YesNo): [Person!]!
     findPerson(name: String!): Person
     me: User
   }
+
   type Mutation {
     addPerson(
       name: String!
@@ -74,18 +78,20 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     personCount: () => Person.collection.countDocuments(),
+
     allPersons: (root, args) => {
       if (!args.phone) {
         return Person.find({});
       }
-
       return Person.find({ phone: { $exists: args.phone === 'YES' } });
     },
+
     findPerson: (root, args) => Person.findOne({ name: args.name }),
     me: (root, args, context) => {
       return context.currentUser;
     },
   },
+
   Person: {
     address: (root) => {
       return {
@@ -94,15 +100,14 @@ const resolvers = {
       };
     },
   },
+
   Mutation: {
     addPerson: async (root, args, context) => {
       const person = new Person({ ...args });
       const currentUser = context.currentUser;
-
       if (!currentUser) {
         throw new AuthenticationError('not authenticated');
       }
-
       try {
         await person.save();
         currentUser.friends = currentUser.friends.concat(person);
@@ -112,13 +117,12 @@ const resolvers = {
           invalidArgs: args,
         });
       }
-
       return person;
     },
+
     editNumber: async (root, args) => {
       const person = await Person.findOne({ name: args.name });
       person.phone = args.phone;
-
       try {
         await person.save();
       } catch (error) {
@@ -127,27 +131,23 @@ const resolvers = {
         });
       }
     },
+
     createUser: (root, args) => {
       const user = new User({ username: args.username });
-
       return user.save().catch((error) => {
-        throw new UserInputError(error.message, {
-          invalidArgs: args,
-        });
+        throw new UserInputError(error.message, { invalidArgs: args });
       });
     },
+
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username });
-
       if (!user || args.password !== 'secret') {
         throw new UserInputError('wrong credentials');
       }
-
       const userForToken = {
         username: user.username,
-        id: user._id,
+        id: user.__id,
       };
-
       return { value: jwt.sign(userForToken, config.JWT_SECRET) };
     },
     addAsFriend: async (root, args, { currentUser }) => {
