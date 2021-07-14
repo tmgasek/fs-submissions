@@ -49,6 +49,14 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
+  Book: {
+    author: (root) => {
+      return {
+        name: root.author,
+        id: root.ID,
+      };
+    },
+  },
   Query: {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
