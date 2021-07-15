@@ -24,6 +24,10 @@ const typeDefs = gql`
     bookCount: Int
     id: ID!
   }
+  input AuthorInput {
+    name: String!
+    born: Int
+  }
   type Book {
     title: String!
     published: Int!
@@ -40,7 +44,7 @@ const typeDefs = gql`
   type Mutation {
     addBook(
       title: String!
-      author: String!
+      author: AuthorInput!
       published: Int!
       genres: [String!]!
     ): Book
@@ -49,17 +53,10 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
-  Book: {
-    author: (root) => {
-      return {
-        name: root.author,
-        id: root.ID,
-      };
-    },
-  },
   Query: {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
+    allAuthors: () => Author.find({}),
     allBooks: () => {
       // if (args.author) {
       //   let booksByAuthor = books.filter((book) => book.author === args.author);
@@ -78,36 +75,51 @@ const resolvers = {
       //   return booksByGenre;
       // }
 
-      return Book.find({});
+      return Book.find({}).populate('author');
     },
-
-    allAuthors: () => Author.find({}),
   },
-  // Author: {
-  //   bookCount: (root) => {
-  //     const booksByAuthor = books.filter((book) => book.author === root.name);
-  //     return booksByAuthor.length;
-  //   },
-  // },
+  Author: {
+    bookCount: async (root) => {
+      const books = await Book.find({ author: root._id });
+      return books.length;
+    },
+  },
   Mutation: {
     addBook: async (root, args) => {
-      const book = new Book({ ...args });
+      const existingAuthor = await Author.findOne({ name: args.author.name });
+
+      if (!existingAuthor) {
+        const author = new Author({ ...args.author });
+        try {
+          await author.save();
+        } catch (err) {
+          throw new UserInputError(err.message, {
+            invalidArgs: args,
+          });
+        }
+      }
+
+      const author = await Author.findOne({ name: args.author.name });
+      const book = new Book({ ...args, author });
+
       try {
         await book.save();
       } catch (err) {
-        throw new UserInputError(err.message);
+        throw new UserInputError(err.message, {
+          invalidArgs: args,
+        });
       }
       return book;
     },
-    // editAuthorBirth: (root, args) => {
-    //   const authorToEdit = authors.find((author) => author.name === args.name);
-    //   if (!authorToEdit) return null;
-    //   const editedAuthor = { ...authorToEdit, born: args.setBornTo };
-    //   authors = authors.map((author) =>
-    //     author.name === editedAuthor.name ? editedAuthor : author
-    //   );
-    //   return editedAuthor;
-    // },
+    editAuthorBirth: (root, args) => {
+      // const authorToEdit = authors.find((author) => author.name === args.name);
+      // if (!authorToEdit) return null;
+      // const editedAuthor = { ...authorToEdit, born: args.setBornTo };
+      // authors = authors.map((author) =>
+      //   author.name === editedAuthor.name ? editedAuthor : author
+      // );
+      // return editedAuthor;
+    },
   },
 };
 
