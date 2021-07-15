@@ -57,7 +57,7 @@ const resolvers = {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     allAuthors: () => Author.find({}),
-    allBooks: () => {
+    allBooks: async (root, args) => {
       // if (args.author) {
       //   let booksByAuthor = books.filter((book) => book.author === args.author);
       //   if (args.genre) {
@@ -68,12 +68,12 @@ const resolvers = {
       //   }
       // }
 
-      // if (args.genre) {
-      //   const booksByGenre = books.filter((book) =>
-      //     book.genres.includes(args.genre)
-      //   );
-      //   return booksByGenre;
-      // }
+      if (args.genre) {
+        const booksByGenre = await Book.find({
+          genres: { $in: args.genre },
+        }).populate('author');
+        return booksByGenre;
+      }
 
       return Book.find({}).populate('author');
     },
@@ -111,14 +111,12 @@ const resolvers = {
       }
       return book;
     },
-    editAuthorBirth: (root, args) => {
-      // const authorToEdit = authors.find((author) => author.name === args.name);
-      // if (!authorToEdit) return null;
-      // const editedAuthor = { ...authorToEdit, born: args.setBornTo };
-      // authors = authors.map((author) =>
-      //   author.name === editedAuthor.name ? editedAuthor : author
-      // );
-      // return editedAuthor;
+    editAuthorBirth: async (root, args) => {
+      return Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        { new: true }
+      );
     },
   },
 };
