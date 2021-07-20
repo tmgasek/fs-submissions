@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Books = ({ show, result }) => {
+  const [filter, setFilter] = useState('');
   if (!show) {
     return null;
   }
 
-  const books = result.data.allBooks;
+  const allBooks = result.data.allBooks;
 
-  console.log(books);
+  let genres = ['All genres'];
+  allBooks.forEach((element) => {
+    element.genres.forEach((g) => {
+      if (genres.indexOf(g) === -1) {
+        genres.push(g);
+      }
+    });
+  });
+
+  const handleFilterClick = (genre) => {
+    console.log(genre);
+    setFilter(genre);
+
+    // const filtered = allBooks.filter()
+  };
+
   return (
     <div>
       <h2>books</h2>
@@ -19,7 +35,7 @@ const Books = ({ show, result }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map((a) => (
+          {allBooks.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
@@ -28,6 +44,11 @@ const Books = ({ show, result }) => {
           ))}
         </tbody>
       </table>
+      {genres.map((g) => (
+        <button key={g} onClick={() => handleFilterClick(g)}>
+          {g}
+        </button>
+      ))}
     </div>
   );
 };
