@@ -6,6 +6,7 @@ import LoginForm from './components/LoginForm';
 
 import { useApolloClient, useQuery } from '@apollo/client';
 import { ALL_AUTHORS, ALL_BOOKS } from './queries';
+import Recommended from './components/Recommended';
 
 const App = () => {
   const [page, setPage] = useState('authors');
@@ -15,6 +16,7 @@ const App = () => {
   const allBooksResult = useQuery(ALL_BOOKS);
 
   const client = useApolloClient();
+
   useEffect(() => {
     const token = localStorage.getItem('library-user-token');
     setToken(token);
@@ -45,6 +47,7 @@ const App = () => {
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('add')}>add book</button>
+        <button onClick={() => setPage('recommended')}>recommended</button>
       </div>
 
       <Authors
@@ -55,6 +58,8 @@ const App = () => {
       <Books show={page === 'books'} result={allBooksResult} />
 
       <NewBook show={page === 'add'} />
+
+      <Recommended show={page === 'recommended'} result={allBooksResult} />
     </div>
   );
 };

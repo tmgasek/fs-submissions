@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const Books = ({ show, result }) => {
   const [filter, setFilter] = useState('All genres');
+
   if (!show) {
     return null;
   }
@@ -18,13 +19,11 @@ const Books = ({ show, result }) => {
   });
 
   const handleFilterClick = (genre) => {
-    console.log(genre);
     setFilter(genre);
   };
 
   const filtered = () => {
     const filtered = allBooks.filter((book) => book.genres.includes(filter));
-    console.log(filtered);
     return (
       <>
         {filtered.map((a) => (

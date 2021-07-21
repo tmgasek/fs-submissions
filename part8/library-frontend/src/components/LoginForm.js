@@ -7,6 +7,9 @@ const LoginForm = ({ setToken }) => {
   const [password, setPassword] = useState('');
 
   const [login, result] = useMutation(LOGIN, {
+    onCompleted: () => {
+      console.log('loggedin');
+    },
     onError: (error) => {
       console.log(error);
     },
