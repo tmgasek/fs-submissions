@@ -1,18 +1,37 @@
-import { useQuery } from '@apollo/client';
-import React from 'react';
-import { ME } from '../queries';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { ALL_BOOKS_BY_GENRE, ME } from '../queries';
 
 const Recommended = ({ show, result }) => {
-  const currUser = useQuery(ME);
+  const [favGenre, setFavGenre] = useState(null);
+  const [books, setBooks] = useState(null);
 
-  if (!show) {
-    return null;
-  }
+  const currUserQuery = useQuery(ME);
 
-  if (currUser.loading) {
-    return <div>loading...</div>;
-  }
-  const allBooks = result.data.allBooks;
+  const [getGenreFilter, genreFilterQuery] = useLazyQuery(ALL_BOOKS_BY_GENRE);
+
+  useEffect(() => {
+    console.log('fired1');
+    if (favGenre) {
+      getGenreFilter({ variables: { genre: favGenre } });
+    }
+  }, [favGenre, getGenreFilter]);
+
+  useEffect(() => {
+    console.log('fired2');
+    if (genreFilterQuery.data) {
+      setBooks(genreFilterQuery.data.allBooks);
+    }
+  }, [genreFilterQuery]);
+
+  if (!show) return null;
+  if (currUserQuery.loading || genreFilterQuery.loading) return null;
+  if (currUserQuery.error) return `ERROR ${currUserQuery.error}`;
+  if (genreFilterQuery.error) return `ERROR ${genreFilterQuery.error}`;
+
+  if (!favGenre) setFavGenre(currUserQuery.data.me.favoriteGenre);
+
+  if (!books) return null;
 
   return (
     <div>
@@ -24,18 +43,14 @@ const Recommended = ({ show, result }) => {
             <th>published</th>
             <th>genres</th>
           </tr>
-          {allBooks
-            .filter((book) =>
-              book.genres.includes(currUser.data.me.favoriteGenre)
-            )
-            .map((a) => (
-              <tr key={a.title}>
-                <td>{a.title}</td>
-                <td>{a.author.name}</td>
-                <td>{a.published}</td>
-                <td>{a.genres.join(', ')}</td>
-              </tr>
-            ))}
+          {books.map((a) => (
+            <tr key={a.title}>
+              <td>{a.title}</td>
+              <td>{a.author.name}</td>
+              <td>{a.published}</td>
+              <td>{a.genres.join(', ')}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

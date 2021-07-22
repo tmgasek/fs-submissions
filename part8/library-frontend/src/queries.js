@@ -29,7 +29,7 @@ export const ALL_BOOKS = gql`
 `;
 
 export const ALL_BOOKS_BY_GENRE = gql`
-  query AllBooksByGenre($genre: String!) {
+  query allBooksByGenre($genre: String!) {
     allBooks(genre: $genre) {
       title
       published
@@ -69,7 +69,7 @@ export const CREATE_BOOK = gql`
     }
   }
 `;
-//     editAuthorBirth(name: String!, setBornTo: Int!): Author
+
 export const EDIT_AUTHOR_BIRTH = gql`
   mutation editAuthorBirth($name: String!, $birthYear: Int!) {
     editAuthorBirth(name: $name, setBornTo: $birthYear) {
