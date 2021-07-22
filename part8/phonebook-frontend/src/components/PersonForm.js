@@ -24,11 +24,16 @@ const PersonForm = ({ setError }) => {
     },
   });
 
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
 
     createPerson({
-      variables: { name, phone: phone.length > 0 ? phone : null, street, city },
+      variables: {
+        name,
+        street,
+        city,
+        phone: phone.length > 0 ? phone : null,
+      },
     });
 
     setName('');

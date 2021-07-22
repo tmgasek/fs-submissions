@@ -18,10 +18,11 @@ const LoginForm = ({ setError, setToken }) => {
       setToken(token);
       localStorage.setItem('phonenumbers-user-token', token);
     }
-  }, [result.data]); //eslint-disable-line
+  }, [result.data]); // eslint-disable-line
 
   const submit = async (event) => {
     event.preventDefault();
+
     login({ variables: { username, password } });
   };
 
@@ -33,7 +34,7 @@ const LoginForm = ({ setError, setToken }) => {
           <input
             value={username}
             onChange={({ target }) => setUsername(target.value)}
-          ></input>
+          />
         </div>
         <div>
           password{' '}
@@ -41,7 +42,7 @@ const LoginForm = ({ setError, setToken }) => {
             type="password"
             value={password}
             onChange={({ target }) => setPassword(target.value)}
-          ></input>
+          />
         </div>
         <button type="submit">login</button>
       </form>

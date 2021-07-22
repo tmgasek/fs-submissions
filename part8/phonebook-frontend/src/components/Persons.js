@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLazyQuery } from '@apollo/client';
+
 import { FIND_PERSON } from '../queries';
 
 const Persons = ({ persons }) => {
@@ -31,9 +32,9 @@ const Persons = ({ persons }) => {
 
   return (
     <div>
-      <h2>persons</h2>
+      <h2>Persons</h2>
       {persons.map((p) => (
-        <div key={p.id}>
+        <div key={p.name}>
           {p.name} {p.phone}
           <button onClick={() => showPerson(p.name)}>show address</button>
         </div>

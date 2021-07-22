@@ -1,15 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const ALL_PERSONS = gql`
-  query {
-    allPersons {
-      name
-      phone
-      id
-    }
-  }
-`;
-
 export const FIND_PERSON = gql`
   query findPersonByName($nameToSearch: String!) {
     findPerson(name: $nameToSearch) {
@@ -43,6 +33,15 @@ export const CREATE_PERSON = gql`
   }
 `;
 
+export const ALL_PERSONS = gql`
+  query {
+    allPersons {
+      name
+      phone
+      id
+    }
+  }
+`;
 export const EDIT_NUMBER = gql`
   mutation editNumber($name: String!, $phone: String!) {
     editNumber(name: $name, phone: $phone) {
@@ -61,14 +60,6 @@ export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       value
-    }
-  }
-`;
-
-export const ME = gql`
-  query {
-    me {
-      username
     }
   }
 `;
