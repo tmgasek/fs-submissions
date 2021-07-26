@@ -2,7 +2,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
 import { ALL_BOOKS_BY_GENRE, ME } from '../queries';
 
-const Recommended = ({ show, result }) => {
+const Recommended = ({ show }) => {
   const [favGenre, setFavGenre] = useState(null);
   const [books, setBooks] = useState(null);
 

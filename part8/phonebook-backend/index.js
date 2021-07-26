@@ -11,6 +11,9 @@ const Person = require('./models/person');
 const jwt = require('jsonwebtoken');
 const User = require('./models/user');
 
+const { PubSub } = require('apollo-server');
+const pubsub = new PubSub();
+
 console.log('connecting to', config.MONGODB_URI);
 mongoose
   .connect(config.MONGODB_URI, {
@@ -25,6 +28,8 @@ mongoose
   .catch((error) => {
     console.log('error connection to MongoDB:', error.message);
   });
+
+mongoose.set('debug', true);
 
 const typeDefs = gql`
   enum YesNo {
@@ -51,6 +56,7 @@ const typeDefs = gql`
     name: String!
     phone: String
     address: Address!
+    friendOf: [User!]!
     id: ID!
   }
 
@@ -73,6 +79,10 @@ const typeDefs = gql`
     login(username: String!, password: String!): Token
     addAsFriend(name: String!): User
   }
+
+  type Subscription {
+    personAdded: Person!
+  }
 `;
 
 const resolvers = {
@@ -80,10 +90,14 @@ const resolvers = {
     personCount: () => Person.collection.countDocuments(),
 
     allPersons: (root, args) => {
+      console.log('Person.find');
       if (!args.phone) {
-        return Person.find({});
+        return Person.find({}).populate('friendOf');
       }
-      return Person.find({ phone: { $exists: args.phone === 'YES' } });
+
+      return Person.find({ phone: { $exists: args.phone === 'YES' } }).populate(
+        'friendOf'
+      );
     },
 
     findPerson: (root, args) => Person.findOne({ name: args.name }),
@@ -98,6 +112,10 @@ const resolvers = {
         street: root.street,
         city: root.city,
       };
+    },
+    friendOf: async (root) => {
+      const friends = await User.find({ friends: { $in: [root._id] } });
+      return friends;
     },
   },
 
@@ -117,6 +135,7 @@ const resolvers = {
           invalidArgs: args,
         });
       }
+      pubsub.publish('PERSON_ADDED', { personAdded: person });
       return person;
     },
 
@@ -169,6 +188,11 @@ const resolvers = {
       return currentUser;
     },
   },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED']),
+    },
+  },
 };
 
 const server = new ApolloServer({
@@ -186,6 +210,7 @@ const server = new ApolloServer({
   },
 });
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`server ready at ${url}`);
+  console.log(`subscriptions ready at ${subscriptionsUrl}`);
 });
